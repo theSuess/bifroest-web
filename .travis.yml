@@ -1,0 +1,15 @@
+language: elixir
+elixir:
+  - 1.4.2
+otp_release:
+  - 19.0
+sudo: false
+addons:
+  postgresql: '9.4'
+notifications:
+  email: false
+env:
+  - MIX_ENV=test
+before_script:
+  - cp config/travis_ci_test.exs config/test.exs
+  - mix do ecto.create, ecto.migrate
