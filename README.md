@@ -1,4 +1,4 @@
-# Bifroest
+# Bifroest [![Build Status](https://travis-ci.org/theSuess/bifroest-web.svg?branch=master)](https://travis-ci.org/theSuess/bifroest-web)
 
 To start your Phoenix server:
 
