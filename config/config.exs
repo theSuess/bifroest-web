@@ -7,7 +7,8 @@ use Mix.Config
 
 # General application configuration
 config :bifroest,
-  ecto_repos: [Bifroest.Repo]
+  ecto_repos: [Bifroest.Repo],
+  organization_name: "htl-ottakring.ac.at"
 
 # Configures the endpoint
 config :bifroest, Bifroest.Web.Endpoint,

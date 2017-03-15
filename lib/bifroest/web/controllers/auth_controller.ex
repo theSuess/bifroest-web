@@ -43,7 +43,7 @@ defmodule Bifroest.Web.AuthController do
       {:error, reason} ->
         conn
         |> put_flash(:error, reason)
-        |> redirect(to: "/login")
+        |> redirect(to: "/auth")
     end
   end
 

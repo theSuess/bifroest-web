@@ -15,8 +15,8 @@ defmodule Bifroest.Accounts do
 
   ## Examples
 
-      iex> list_users()
-      [%User{}, ...]
+  iex> list_users()
+  [%User{}, ...]
 
   """
   def list_users do
@@ -42,11 +42,11 @@ defmodule Bifroest.Accounts do
 
   ## Examples
 
-      iex> get_user!(123)
-      %User{}
+  iex> get_user!(123)
+  %User{}
 
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
+  iex> get_user!(456)
+  ** (Ecto.NoResultsError)
 
   """
   def get_user!(id) when is_integer(id), do: Repo.get!(User, id)
@@ -56,11 +56,11 @@ defmodule Bifroest.Accounts do
 
   ## Examples
 
-      iex> create_user(user, %{field: value})
-      {:ok, %User{}}
+  iex> create_user(user, %{field: value})
+  {:ok, %User{}}
 
-      iex> create_user(user, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> create_user(user, %{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def create_user(attrs \\ %{}) do
@@ -75,11 +75,11 @@ defmodule Bifroest.Accounts do
 
   ## Examples
 
-      iex> update_user(user, %{field: new_value})
-      {:ok, %User{}}
+  iex> update_user(user, %{field: new_value})
+  {:ok, %User{}}
 
-      iex> update_user(user, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> update_user(user, %{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def update_user(%User{} = user, attrs) do
@@ -93,11 +93,11 @@ defmodule Bifroest.Accounts do
 
   ## Examples
 
-      iex> delete_user(user)
-      {:ok, %User{}}
+  iex> delete_user(user)
+  {:ok, %User{}}
 
-      iex> delete_user(user)
-      {:error, %Ecto.Changeset{}}
+  iex> delete_user(user)
+  {:error, %Ecto.Changeset{}}
 
   """
   def delete_user(%User{} = user) do
@@ -109,8 +109,8 @@ defmodule Bifroest.Accounts do
 
   ## Examples
 
-      iex> change_user(user)
-      %Ecto.Changeset{source: %User{}}
+  iex> change_user(user)
+  %Ecto.Changeset{source: %User{}}
 
   """
   def change_user(%User{} = user) do
@@ -126,9 +126,15 @@ defmodule Bifroest.Accounts do
 
   def find_or_create(%Auth{} = auth) do
     email =  auth.info.email
-    case get_user(email) do
-      nil -> create_user(basic_info(auth))
-      user -> {:ok, user}
+    [_ ,domain] = email |> String.split("@")
+    cond do
+      domain != Application.get_env(:bifroest,:organization_name) ->
+        {:error, "Invalid Organization Domain"}
+      true ->
+        case get_user(email) do
+          nil -> create_user(basic_info(auth))
+          user -> {:ok, user}
+        end
     end
   end
 

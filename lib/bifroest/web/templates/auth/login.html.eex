@@ -5,6 +5,7 @@
     </a>
 </div>
 <div class="col-sm-5 col-md-6 col-lg-7 details">
-    <p><strong>Welcome to PatternFly | open interface project!</strong>
-        This is placeholder text, only. Use this area to place any information or introductory message about your application that may be relevant for users. For example, you might include news or information about the latest release of your product here&mdash;such as a version number.</p>
+    <p><strong>Welcome to Bifröst</strong>
+        Please use your <%= organization_name() %> account to log in.
+    </p>
 </div>
