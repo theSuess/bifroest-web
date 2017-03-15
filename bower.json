@@ -1,0 +1,6 @@
+{
+  "name": "MyPhoenixProject",
+  "dependencies": {
+    "jquery": "~ 2.1"
+  }
+}

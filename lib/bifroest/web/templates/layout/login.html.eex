@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--[if IE 9]><html lang="en-us" class="ie9 layout-pf layout-pf-fixed"><![endif]-->
+<!--[if gt IE 9]><!-->
+<html class="login-pf">
+    <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bifröst</title>
+        <meta name="description" content="PatternFly is an open source web user interface framework promoting consistency and usability across IT applications through UX patterns and widgets">
+        <link rel="shortcut icon" href="/components/patternfly/dist/img/favicon.ico">
+        <!-- iPad retina icon -->
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/components/patternfly/dist/img/apple-touch-icon-precomposed-152.png">
+        <!-- iPad retina icon (iOS < 7) -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/components/patternfly/dist/img/apple-touch-icon-precomposed-144.png">
+        <!-- iPad non-retina icon -->
+        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/components/patternfly/dist/img/apple-touch-icon-precomposed-76.png">
+        <!-- iPad non-retina icon (iOS < 7) -->
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/components/patternfly/dist/img/apple-touch-icon-precomposed-72.png">
+        <!-- iPhone 6 Plus icon -->
+        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/components/patternfly/dist/img/apple-touch-icon-precomposed-180.png">
+        <!-- iPhone retina icon (iOS < 7) -->
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/components/patternfly/dist/img/apple-touch-icon-precomposed-114.png">
+        <!-- iPhone non-retina icon (iOS < 7) -->
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/components/patternfly/dist/img/apple-touch-icon-precomposed-57.png">
+
+        <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    </head>
+    <body>
+        <div class="toast-notifications-list-pf">
+            <% info = get_flash(@conn, :info) %>
+            <% error = get_flash(@conn, :error) %>
+            <%= if info do %>
+                <div class="toast-pf alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <span class="pficon pficon-warning-triangle-o"></span>
+
+                    <%= info %>
+                </div>
+            <% end %>
+            <%= if error do %>
+
+                <div class="toast-pf alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <span class="pficon pficon-warning-triangle-o"></span>
+
+                    <%= info %>
+                    <%= error %>
+                </div>
+            <% end %>
+
+        </div>
+        <span id="badge">
+            <img src="//assets/img/logo.svg" alt=" logo" />
+        </span>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="brand">
+                        <img src="//assets/img/brand.svg" alt="PatternFly Enterprise Application">
+                    </div><!--/#brand-->
+                </div><!--/.col-*-->
+                <%= render @view_module, @view_template, assigns %>
+            </div><!--/.row-->
+        </div><!--/.container-->
+
+        <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    </body>
+</html>
