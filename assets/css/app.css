@@ -1,4 +1,26 @@
 /* This file is for your main application css. */
-cubela {
-    color: red;
+.dropdown-menu > li > form > a {
+    border-color: transparent;
+    border-style: solid;
+    border-width: 1px 0;
+    padding: 1px 10px;
+    display: block;
+    clear: both;
+    font-weight: 400;
+    color: #363636;
+}
+
+.dropdown-menu > li > form > a:hover{
+    border-color: #bee1f4;
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    text-decoration: none;
+    color: #4d5258;
+    background-color: #def3ff;
+}
+.dropdown-menu > li > form > a:focus {
+    border-color: #bee1f4;
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    text-decoration: none;
+    color: #4d5258;
+    background-color: #def3ff;
 }

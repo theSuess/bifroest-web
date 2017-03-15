@@ -2,6 +2,7 @@ defmodule Bifroest.Web.AuthController do
   use Bifroest.Web, :controller
   alias Bifroest.Accounts
   plug Ueberauth
+  require Logger
 
   alias Ueberauth.Strategy.Helpers
   def request(conn, _params) do

@@ -7,6 +7,8 @@ defmodule Bifroest.Web.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
   end
 
   pipeline :api do
@@ -14,8 +16,6 @@ defmodule Bifroest.Web.Router do
   end
 
   pipeline :browser_auth do
-    plug Guardian.Plug.VerifySession
-    plug Guardian.Plug.LoadResource
     plug Guardian.Plug.EnsureAuthenticated, handler: Bifroest.Web.AuthController
   end
 

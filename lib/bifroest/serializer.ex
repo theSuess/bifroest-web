@@ -1,10 +1,8 @@
 defmodule Bifroest.GuardianSerializer do
   @behaviour Guardian.Serializer
 
-  alias Bifroest.Repo
   alias Bifroest.Accounts
   alias Bifroest.Accounts.User
-  require Logger
 
   def for_token(user = %User{}) do
     { :ok, "User:#{user.id}" }

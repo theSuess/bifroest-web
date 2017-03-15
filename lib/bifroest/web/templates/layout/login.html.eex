@@ -48,8 +48,6 @@
                         <span class="pficon pficon-close"></span>
                     </button>
                     <span class="pficon pficon-warning-triangle-o"></span>
-
-                    <%= info %>
                     <%= error %>
                 </div>
             <% end %>
@@ -62,7 +60,9 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div id="brand">
-                        <img src="//assets/img/brand.svg" alt="PatternFly Enterprise Application">
+                        <h1>
+                            <b>Bifröst</b> Management Console
+                        </h1>
                     </div><!--/#brand-->
                 </div><!--/.col-*-->
                 <%= render @view_module, @view_template, assigns %>

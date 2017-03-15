@@ -30,22 +30,39 @@
     </head>
 
     <body class="cards-pf">
+        <div class="toast-notifications-list-pf">
+            <% info = get_flash(@conn, :info) %>
+            <% error = get_flash(@conn, :error) %>
+            <%= if info do %>
+                <div class="toast-pf alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <span class="pficon pficon-warning-triangle-o"></span>
+                    <%= info %>
+                </div>
+            <% end %>
+            <%= if error do %>
+                <div class="toast-pf alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <span class="pficon pficon-warning-triangle-o"></span>
+                    <%= error %>
+                </div>
+            <% end %>
+        </div>
+
         <nav class="navbar navbar-pf-vertical">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a href="/" class="navbar-brand">
-                    <img class="navbar-brand-icon" src="//assets/img/logo-alt.svg" alt=""><img class="navbar-brand-name" src="//assets/img/brand-alt.svg" alt="PatternFly Enterprise Application">
+                    <img class="navbar-brand-icon" src="//assets/img/logo-alt.svg" alt="">
+                    <span class="navbar-brand-name">
+                        <b>Bifröst</b> Management Console
+                    </span>
                 </a>
             </div>
             <nav class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="#" target="_blank" class="nav-item-iconic nav-item-iconic-new-window"><span title="Launch" class="fa fa-external-link"></span></a></li>
-                </ul>
                 <ul class="nav navbar-nav navbar-right navbar-iconic">
                     <li class="dropdown">
                         <a class="dropdown-toggle nav-item-iconic" id="notifications" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
