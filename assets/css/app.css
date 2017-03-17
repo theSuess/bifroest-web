@@ -24,3 +24,14 @@
     color: #4d5258;
     background-color: #def3ff;
 }
+
+.dropdown-menu > li.username{
+    border-color: transparent;
+    border-style: solid;
+    border-width: 1px 0;
+    padding: 1px 10px;
+    display: block;
+    clear: both;
+    font-weight: 400;
+    color: #363636;
+}

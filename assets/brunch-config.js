@@ -7,6 +7,7 @@ exports.config = {
                 before: [
                     'vendor/jquery.min.js',
                     'vendor/bootstrap.min.js',
+                    'vendor/patternfly.min.js',
                 ]
             }
         },
@@ -51,6 +52,10 @@ exports.config = {
     },
 
     npm: {
-        enabled: true
+        enabled: true,
+        globals: {
+            $: 'jquery',
+            jQuery: 'jquery'
+        }
     }
 };
