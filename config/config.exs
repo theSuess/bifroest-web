@@ -8,7 +8,11 @@ use Mix.Config
 # General application configuration
 config :bifroest,
   ecto_repos: [Bifroest.Repo],
-  organization_name: "htl-ottakring.ac.at"
+  organization_name: "htl-ottakring.ac.at",
+  openstack_username: System.get_env("OS_USERNAME"),
+  openstack_password: System.get_env("OS_PASSWORD"),
+  openstack_auth_url: System.get_env("OS_AUTH_URL"),
+  openstack_compute_url: System.get_env("OS_COMPUTE_URL")
 
 # Configures the endpoint
 config :bifroest, Bifroest.Web.Endpoint,
@@ -39,6 +43,13 @@ config :guardian, Guardian,
   secret_key: "secret",
   serializer: Bifroest.GuardianSerializer
 
+config :exredis,
+  host: "127.0.0.1",
+  port: 6379,
+  password: "",
+  db: 0,
+  reconnect: :no_reconnect,
+  max_queue: :infinity
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

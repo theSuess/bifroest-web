@@ -6,6 +6,8 @@ config :bifroest, Bifroest.Web.Endpoint,
   http: [port: 4001],
   server: false
 
+config :bifroest, :openstack_api, Bifroest.Openstack.ApiMock
+
 # Print only warnings and errors during test
 config :logger, level: :warn
 

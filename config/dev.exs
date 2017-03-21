@@ -14,6 +14,8 @@ config :bifroest, Bifroest.Web.Endpoint,
   watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
                     cd: Path.expand("../assets", __DIR__)]]
 
+config :bifroest, :openstack_api, Bifroest.Openstack.Api
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

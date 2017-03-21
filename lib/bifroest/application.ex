@@ -12,8 +12,11 @@ defmodule Bifroest.Application do
       supervisor(Bifroest.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Bifroest.Web.Endpoint, []),
+      # Start the openstack process registry
+      supervisor(Registry, [:unique, :os_process_registry]),
       # Start your own worker by calling: Bifroest.Worker.start_link(arg1, arg2, arg3)
       # worker(Bifroest.Worker, [arg1, arg2, arg3]),
+      worker(Bifroest.Openstack.Registry, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
