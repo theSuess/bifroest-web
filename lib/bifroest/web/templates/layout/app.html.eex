@@ -104,6 +104,10 @@
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <li class="username"><%= user.name %></li>
                             <li role="presentation" class="divider"></li>
+                            <%= if user.is_admin do %>
+                                <li><a href="/admin">Admin Interface</a></li>
+                                <li role="presentation" class="divider"></li>
+                            <% end %>
                             <li><a href="#">Preferences</a></li>
                             <li><%= link "Logout", to: auth_path(@conn, :delete), method: :delete %></li>
                         </ul>

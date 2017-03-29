@@ -41,7 +41,13 @@ config :guardian, Guardian,
   ttl: { 30, :days },
   allowed_drift: 2000,
   secret_key: "secret",
-  serializer: Bifroest.GuardianSerializer
+  serializer: Bifroest.GuardianSerializer,
+  permissions: %{
+    default: [
+      :admin,
+      :user,
+    ]
+  }
 
 config :exredis,
   host: "127.0.0.1",

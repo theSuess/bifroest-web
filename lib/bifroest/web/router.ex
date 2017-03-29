@@ -20,6 +20,10 @@ defmodule Bifroest.Web.Router do
     plug Guardian.Plug.EnsureAuthenticated, handler: Bifroest.Web.AuthController
   end
 
+  pipeline :browser_admin do
+    plug Guardian.Plug.EnsurePermissions, handler: Bifroest.Web.AuthController, default: [:admin]
+  end
+
   scope "/", Bifroest.Web do
     pipe_through [:browser,:browser_auth] # Use the default browser stack
 
@@ -34,6 +38,11 @@ defmodule Bifroest.Web.Router do
     get "/:provider/callback", AuthController, :callback
     post "/:provider/callback", AuthController, :callback
     delete "/", AuthController, :delete
+  end
+
+  scope "/admin", Bifroest.Web do
+    pipe_through [:browser, :browser_auth, :browser_admin]
+    get "/", PageController, :admin
   end
 
   # Other scopes may use custom stacks.

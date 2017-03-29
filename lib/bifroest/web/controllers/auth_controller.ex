@@ -37,8 +37,9 @@ defmodule Bifroest.Web.AuthController do
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
     case Accounts.find_or_create(auth) do
       {:ok, user} ->
+        permissions = if user.is_admin, do: [:admin], else: [:user]
         conn
-        |> Guardian.Plug.sign_in(user)
+        |> Guardian.Plug.sign_in(user, :access, perms: %{default: permissions})
         |> put_flash(:info, "Successfully authenticated.")
         |> redirect(to: page_path(conn, :index))
       {:error, reason} ->
@@ -57,6 +58,6 @@ defmodule Bifroest.Web.AuthController do
   def unauthorized(conn, _params) do
     conn
     |> put_flash(:error, "You are not authorized to view this page")
-    |> redirect(to: auth_path(conn, :index))
+    |> redirect(to: page_path(conn, :index))
   end
 end

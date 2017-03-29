@@ -1,4 +1,4 @@
-<%= if domains(@conn) != nil do %>
+<%= if domains(@conn) != [] do %>
     <%= for d <- domains(@conn) do %>
         <div class="col-xs-12 col-sm-6 col-md-3">
             <div class="card-pf card-pf-accented card-pf-aggregate-status">

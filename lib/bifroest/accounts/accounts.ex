@@ -119,7 +119,7 @@ defmodule Bifroest.Accounts do
 
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email,:name])
+    |> cast(attrs, [:email,:name,:is_admin])
     |> validate_required([:email,:name])
     |> unique_constraint(:email)
   end
