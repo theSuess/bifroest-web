@@ -9,6 +9,7 @@ defmodule Bifroest.Web.Router do
     plug :put_secure_browser_headers
     plug Guardian.Plug.VerifySession
     plug Guardian.Plug.LoadResource
+    plug Bifroest.Web.Locale
   end
 
   pipeline :api do
@@ -36,7 +37,8 @@ defmodule Bifroest.Web.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", Bifroest.Web do
-  #   pipe_through :api
-  # end
+  scope "/api", Bifroest.Web do
+    pipe_through :api
+    resources "/domains", DomainController, except: [:new, :edit]
+  end
 end

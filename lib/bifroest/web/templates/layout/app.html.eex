@@ -7,7 +7,6 @@
     <!--<![endif]-->
 
     <head>
-
         <meta name="csrf" content="<%= Plug.CSRFProtection.get_csrf_token() %>">
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,7 +28,6 @@
         <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/components/patternfly/dist/img/apple-touch-icon-precomposed-114.png">
         <!-- iPhone non-retina icon (iOS < 7) -->
         <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/components/patternfly/dist/img/apple-touch-icon-precomposed-57.png">
-
         <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     </head>
 
@@ -113,9 +111,10 @@
                 </ul>
             </nav>
         </nav>
-        <div class="container-fluid container-cards-pf container-pf-nav-pf-vertical nav-pf-persistent-secondary">
+        <div class="container-fluid container-cards-pf">
             <%= render @view_module, @view_template, assigns %>
         </div>
+        <%= render "wizard.html" %>
         <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
         <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
     </body>

@@ -41,6 +41,7 @@ defmodule Bifroest.Mixfile do
      {:wobserver, "~> 0.1"},
      {:exredis, ">= 0.2.4"},
      {:httpoison, "~> 0.11.0"},
+     {:exredis, ">= 0.2.4"},
      {:cowboy, "~> 1.0"}]
   end
 

@@ -16,7 +16,8 @@ defmodule Bifroest.Application do
       supervisor(Registry, [:unique, :os_process_registry]),
       # Start your own worker by calling: Bifroest.Worker.start_link(arg1, arg2, arg3)
       # worker(Bifroest.Worker, [arg1, arg2, arg3]),
-      worker(Bifroest.Openstack.Registry, [])
+      worker(Bifroest.Openstack.Registry, []),
+      worker(Bifroest.Loadbalancer, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
