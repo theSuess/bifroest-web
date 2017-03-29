@@ -6,6 +6,8 @@ otp_release:
 sudo: false
 addons:
   postgresql: '9.4'
+services:
+  - redis-server
 notifications:
   email: false
 env:
