@@ -1,6 +1,7 @@
 defmodule Bifroest.Web.DomainController do
   use Bifroest.Web, :controller
 
+  require Logger
   alias Bifroest.Loadbalancer
   alias Bifroest.Loadbalancer.Domain
 
@@ -11,8 +12,11 @@ defmodule Bifroest.Web.DomainController do
     render(conn, "index.json", domains: domains)
   end
 
-  def create(conn, %{"domain" => domain_params}) do
-    with {:ok, %Domain{} = domain} <- Loadbalancer.create_domain(domain_params) do
+  def create(conn, %{"domain" => request_params}) do
+    user = Guardian.Plug.current_resource(conn)
+    with domain_params <- Map.put(request_params,"user_id",user.id),
+         {:ok, %Domain{} = domain} <- Loadbalancer.create_domain(domain_params)
+      do
       conn
       |> put_status(:created)
       |> put_resp_header("location", domain_path(conn, :show, domain))
@@ -35,7 +39,8 @@ defmodule Bifroest.Web.DomainController do
 
   def delete(conn, %{"id" => id}) do
     domain = Loadbalancer.get_domain!(id)
-    with {:ok, %Domain{}} <- Loadbalancer.delete_domain(domain) do
+    user = Guardian.Plug.current_resource(conn)
+    with {:ok, %Domain{}} <- Loadbalancer.delete_domain(domain,user) do
       send_resp(conn, :no_content, "")
     end
   end

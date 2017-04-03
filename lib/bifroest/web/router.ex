@@ -14,6 +14,13 @@ defmodule Bifroest.Web.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
+  end
+
+  pipeline :api_auth do
+    plug Guardian.Plug.EnsureAuthenticated, handler: Bifroest.Web.APIAuthController
   end
 
   pipeline :browser_auth do
@@ -47,7 +54,7 @@ defmodule Bifroest.Web.Router do
 
   # Other scopes may use custom stacks.
   scope "/api", Bifroest.Web do
-    pipe_through :api
+    pipe_through [:api,:api_auth]
     resources "/domains", DomainController, except: [:new, :edit]
   end
 end

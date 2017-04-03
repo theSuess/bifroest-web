@@ -20,6 +20,26 @@ defmodule Bifroest.Loadbalancer do
     GenServer.call(:lb_interface, {:get_host, domain})
   end
 
+  def set_host(domain, host) do
+    GenServer.cast(:lb_interface, {:set_host, domain, host})
+  end
+
+  def del_domain(domain) do
+    GenServer.cast(:lb_interface, {:del_domain, domain})
+  end
+
+  @doc """
+  Lists all Domains with their respective users
+
+  ## Examples
+
+  iex> list_domains()
+  [%Domain{}, ...]
+
+  """
+  def list_domains() do
+    Repo.all(Domain)
+  end
 
   @doc """
   Returns the list of domains by a specific user
@@ -63,9 +83,15 @@ defmodule Bifroest.Loadbalancer do
 
   """
   def create_domain(attrs \\ %{}) do
-    %Domain{}
+    res = %Domain{}
     |> domain_changeset(attrs)
     |> Repo.insert()
+    case res do
+      {:error, _} = err -> err
+      {:ok, %Domain{domain: d, server_addr: h}} ->
+        set_host(d,h)
+        res
+    end
   end
 
   @doc """
@@ -87,19 +113,22 @@ defmodule Bifroest.Loadbalancer do
   end
 
   @doc """
-  Deletes a Domain.
+  Deletes a Domain, checking if the user is permitted to do so
 
   ## Examples
 
-      iex> delete_domain(domain)
+      iex> delete_domain(domain,user)
       {:ok, %Domain{}}
-
-      iex> delete_domain(domain)
-  resources "/domains", DomainController, except: [:new, :edit]    {:error, %Ecto.Changeset{}}
-
   """
-  def delete_domain(%Domain{} = domain) do
-    Repo.delete(domain)
+  def delete_domain(%Domain{} = domain,user) do
+    if domain.user_id == user.id do
+      del_domain(domain.domain)
+      Repo.delete(domain)
+    else
+      changeset = change(%Domain{})
+      |> Ecto.Changeset.add_error(:unauthorized, "You are not authorized to delete this domain")
+      {:error, changeset}
+    end
   end
 
   @doc """
@@ -117,9 +146,40 @@ defmodule Bifroest.Loadbalancer do
 
   defp domain_changeset(%Domain{} = domain, attrs) do
     domain
-    |> cast(attrs, [:domain, :server_id, :user_id])
-    |> validate_required([:domain, :server_id, :user_id])
+    |> cast(attrs, [:domain, :server_addr, :user_id])
+    |> validate_required([:domain, :server_addr, :user_id])
+    |> validate_url(:server_addr)
     |> unique_constraint(:domain)
+  end
+
+  def validate_url(changeset, field, options \\ []) do
+    validate_change(changeset, field, fn _, url ->
+      case is_url?(url) do
+        true -> []
+        false -> [{field, options[:message] || "Invalid URL"}]
+      end
+    end)
+  end
+
+  # Utility functions
+
+  defp validate_uri(str) do
+    uri = URI.parse(str)
+    case uri do
+      %URI{scheme: nil} -> {:error, uri}
+      %URI{host: nil} -> {:error, uri}
+      uri -> {:ok, uri}
+    end
+  end
+
+  def is_url?(url) do
+    val = with {:ok, uri} <- validate_uri(url),
+               {:ok, _} <- :inet.gethostbyname(to_charlist uri.host),
+      do: :valid
+    case val do
+      :valid -> true
+      _ -> false
+    end
   end
 
   # Server Functions
@@ -131,5 +191,15 @@ defmodule Bifroest.Loadbalancer do
   def handle_call({:get_host, domain}, _from, client) do
     ret = client |> Exredis.query(["GET", "bfr:domains:#{domain}"])
     {:reply, ret, client}
+  end
+
+  def handle_cast({:set_host, domain, host}, client) do
+    client |> Exredis.query(["SET","bfr:domains:#{domain}",host])
+    {:noreply, client}
+  end
+
+  def handle_cast({:del_domain, domain}, client) do
+    client |> Exredis.query(["DEL","bfr:domains:#{domain}"])
+    {:noreply, client}
   end
 end

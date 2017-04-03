@@ -5,7 +5,8 @@ defmodule Bifroest.Repo.Migrations.CreateBifroest.Loadbalancer.Domain do
     create table(:loadbalancer_domains) do
       add :domain, :string
       add :server_id, :string
-      add :user_id, references(:accounts_users,on_delete: :delete_all)
+      add :server_addr, :string
+      add :user_id, references(:accounts_users, on_delete: :delete_all)
 
       timestamps()
     end

@@ -6,6 +6,7 @@ exports.config = {
             order: {
                 before: [
                     'vendor/jquery.min.js',
+                    'vendor/jquery.dataTables.min.js',
                     'vendor/bootstrap.min.js',
                     'vendor/patternfly.min.js',
                 ]

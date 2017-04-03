@@ -9,6 +9,7 @@ use Mix.Config
 config :bifroest,
   ecto_repos: [Bifroest.Repo],
   organization_name: "htl-ottakring.ac.at",
+  domain_base: ".projekte.htl-ottakring.at",
   openstack_username: System.get_env("OS_USERNAME"),
   openstack_password: System.get_env("OS_PASSWORD"),
   openstack_auth_url: System.get_env("OS_AUTH_URL"),

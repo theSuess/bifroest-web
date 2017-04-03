@@ -65,7 +65,8 @@
                                 </a>
                             </li>
                         </ul>
-                    </div> <!-- /.wizard-pf-sidebar -->
+                    </div>
+                    <!-- /.wizard-pf-sidebar -->
                     <div class="wizard-pf-main">
                         <div class="wizard-pf-loading blank-slate-pf">
                             <div class="spinner spinner-lg blank-slate-pf-icon"></div>
@@ -229,24 +230,24 @@
                             <div class="wizard-pf-process blank-slate-pf">
                                 <div class="spinner spinner-lg blank-slate-pf-icon"></div>
                                 <h3 class="blank-slate-pf-main-action">Deployment in progress</h3>
-                                <p class="blank-slate-pf-secondary-action">Lorem ipsum dolor sit amet, porta at suspendisse ac, ut wisi
-                                    vivamus, lorem sociosqu eget nunc amet. </p>
+                                <p class="blank-slate-pf-secondary-action">Lorem ipsum dolor sit amet, porta at suspendisse ac, ut wisi vivamus, lorem sociosqu eget nunc amet. </p>
                             </div>
                             <div class="wizard-pf-complete blank-slate-pf hidden">
                                 <div class="wizard-pf-success-icon"><span class="glyphicon glyphicon-ok-circle"></span></div>
                                 <h3 class="blank-slate-pf-main-action">Deployment was successful</h3>
-                                <p class="blank-slate-pf-secondary-action">Lorem ipsum dolor sit amet, porta at suspendisse ac, ut wisi
-                                    vivamus, lorem sociosqu eget nunc amet. </p>
+                                <p class="blank-slate-pf-secondary-action">Lorem ipsum dolor sit amet, porta at suspendisse ac, ut wisi vivamus, lorem sociosqu eget nunc amet. </p>
                                 <button type="button" class="btn btn-lg btn-primary">
                                     View Deployment
                                 </button>
 
                             </div>
                         </div>
-                    </div><!-- /.wizard-pf-main -->
+                    </div>
+                    <!-- /.wizard-pf-main -->
                 </div>
 
-            </div><!-- /.wizard-pf-body -->
+            </div>
+            <!-- /.wizard-pf-body -->
 
             <div class="modal-footer wizard-pf-footer">
                 <button type="button" class="btn btn-default btn-cancel wizard-pf-cancel wizard-pf-dismiss">Cancel</button>
@@ -264,8 +265,49 @@
                 </button>
                 <button type="button" class="btn btn-primary hidden wizard-pf-close wizard-pf-dismiss">Close</button>
 
-            </div><!-- /.wizard-pf-footer -->
+            </div>
+            <!-- /.wizard-pf-footer -->
 
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<div class="modal fade" id="lbModal" tabindex="-1" role="dialog" aria-labelledby="lbModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          <span class="pficon pficon-close"></span>
+        </button>
+                <h4 class="modal-title" id="lbModalLabel">Modal Title</h4>
+            </div>
+            <div class="modal-body">
+                <form id="lbForm" class="form-horizontal">
+                    <div id="form-group-host" class="form-group">
+                        <label class="col-sm-3 control-label" for="textInput-modal-host">Host</label>
+                        <div class="col-sm-9">
+                            <input required type="url" id="textInput-modal-host" class="form-control">
+                            <span class="help-block hidden">Please correct the error</span>
+                        </div>
+                    </div>
+                    <div id="form-group-subdomain" class="form-group">
+                        <label class="col-sm-3 control-label" for="textInput-modal-subdomain">Subdomain</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <input required type="text" id="textInput-modal-subdomain" class="form-control">
+                                <span class="input-group-addon"><%= domain_base() %></span>
+                            </div>
+                            <span class="help-block hidden">Please correct the error</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="lbSubmitButton"><span>Save</span><div class="spinner spinner-inverse hidden"></div></button>
+            </div>
+        </div>
+    </div>
+</div>

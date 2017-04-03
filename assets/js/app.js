@@ -27,7 +27,61 @@ $(document).off('click.bs.dropdown.data-api', '.dropdown form');
 $(document).ready(function() {
     //initialize wizard
     var completeWizard = new wizard(".btn.wizard-pf-complete");
+    // Row Checkbox Selection
+    $("input[type='checkbox']").change(function (e) {
+        if ($(this).is(":checked")) {
+            $(this).closest('.list-group-item').addClass("active");
+        } else {
+            $(this).closest('.list-group-item').removeClass("active");
+        }
+    });
+    $('#lbSubmitButton').click(() => {
+        var subdomain = $('#textInput-modal-subdomain').val();
+        var host = $('#textInput-modal-host').val();
+        if(!$('#lbForm')[0].checkValidity()){
+            $('<input type="submit">').hide().appendTo($('#lbForm')).click().remove();
+            return;
+        }
+        toggleSpinner($('#lbSubmitButton'));
+        $.post('/api/domains',{
+            domain: {
+                domain: subdomain,
+                server_addr: host
+            }
+        }).done(() => {
+            window.location.reload();
+        })
+        .fail((data) => {
+            toggleSpinner($('#lbSubmitButton'));
+            var errors = data.responseJSON.errors;
+            if(errors.domain){
+                setError($('#form-group-subdomain'),errors.domain[0]);
+            }
+            if(errors.server_addr){
+                setError($('#form-group-host'),errors.server_addr[0]);
+            }
+        });
+    });
+    $('.delete-domain').click((e) => {
+        let id = $(e.target).parent().data().domainId;
+        $.ajax({
+            url: `/api/domains/${id}`,
+            type:'DELETE'
+        })
+        .done(() => window.location.reload())
+        .fail(() => alert('Failed!'));
+    });
 });
+
+function setError(formgroup, error) {
+    formgroup.addClass('has-error');
+    formgroup.find('.help-block').removeClass('hidden').text(error);
+}
+
+function toggleSpinner(button) {
+    button.find('.spinner').toggleClass('hidden');
+    button.find('span').toggleClass('hidden');
+}
 
 var wizard = function(id) {
     var self = this, modal, tabs, tabCount, tabLast, currentGroup, currentTab, contents;

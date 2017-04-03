@@ -2,8 +2,8 @@
     <%= for d <- domains(@conn) do %>
         <div class="col-xs-12 col-sm-6 col-md-3">
             <div class="card-pf card-pf-accented card-pf-aggregate-status">
-                <h2 class="card-pf-title">
-                    <span class="fa fa-database"></span>
+                <h2 class="card-pf-title" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                    <span class="pficon pficon-server"></span>
                     <%= d.domain %>
                 </h2>
                 <div class="card-pf-body">
@@ -12,32 +12,34 @@
                         <a href="/editor/">
                             <span class="fa fa-terminal"></span>
                         </a>
-                        </span>
-                        <a href="">
+                        <a class="delete-domain" href="#" data-domain-id="<%= d.id %>">
                             <span class="pficon pficon-delete"></span>
                         </a>
+                        </span>
                     </p>
                 </div>
             </div>
         </div>
     <% end %>
     <button class="btn btn-default wizard-pf-open wizard-pf-complete" data-target="#complete">Create a server</button>
+    <button class="btn btn-default" data-toggle="modal" data-target="#lbModal">Create a loadbalancer</button>
 <%= else %>
     <div class="blank-slate-pf " id="">
         <div class="blank-slate-pf-icon">
-            <span class="pficon pficon pficon-add-circle-o"></span>
+            <span class="pficon pficon-add-circle-o"></span>
         </div>
         <h1>
             Oh Snap!
         </h1>
         <p>
-            "You currently have no servers loaded"
+            You currently have no servers loaded
         </p>
         <p>
             Learn more about this <a href="#">on the documentation</a>.
         </p>
         <div class="blank-slate-pf-main-action">
             <button class="btn btn-primary btn-lg wizard-pf-open wizard-pf-complete" data-target="#complete">Create a server</button>
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#lbModal">Create a loadbalancer</button>
         </div>
     </div>
 <% end %>
