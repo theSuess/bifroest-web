@@ -6,6 +6,7 @@ defmodule Bifroest.Repo.Migrations.CreateBifroest.Accounts.User do
       add :email, :string
       add :name, :string
       add :is_admin, :boolean, default: false
+      add :is_permitted, :boolean, default: false
 
       timestamps()
     end

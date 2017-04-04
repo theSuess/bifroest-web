@@ -35,22 +35,87 @@ $(document).ready(function() {
             $(this).closest('.list-group-item').removeClass("active");
         }
     });
-    $('#lbSubmitButton').click(() => {
-        var subdomain = $('#textInput-modal-subdomain').val();
-        var host = $('#textInput-modal-host').val();
-        if(!$('#lbForm')[0].checkValidity()){
-            $('<input type="submit">').hide().appendTo($('#lbForm')).click().remove();
-            return;
+    $('#lbSubmitButton').click(createLoadbalancer);
+    $('.delete-domain').click(withAttr('domainId',deleteLoadbalancer));
+    $('.approve-user').click(withAttr('userId',approveUser));
+    $('.reject-user').click(withAttr('userId',rejectUser));
+    $('.make-admin').click(withAttr('userId',makeUserAdmin));
+});
+
+function withAttr(attr,fn){
+    return function(e){
+        var attrVal = $(e.target).data(attr);
+        if(attrVal === undefined){
+            attrVal = $(e.target).parent().data(attr);
         }
-        toggleSpinner($('#lbSubmitButton'));
-        $.post('/api/domains',{
-            domain: {
-                domain: subdomain,
-                server_addr: host
-            }
-        }).done(() => {
-            window.location.reload();
-        })
+        fn(attrVal);
+    };
+}
+
+function makeUserAdmin(id){
+    if(!confirm('Are you sure you want to make this user an Administrator?')){
+        return;
+    }
+    $.ajax({
+        url: `/api/users/${id}`,
+        type:'PUT',
+        data:{
+            admin: true
+        }
+    })
+    .done(() => window.location.reload())
+    .fail(() => alert('Failed!'));
+}
+
+function rejectUser(id){
+    $.ajax({
+        url: `/api/users/${id}`,
+        type:'PUT',
+        data:{
+            approved: false
+        }
+    })
+    .done(() => window.location.reload())
+    .fail(() => alert('Failed!'));
+}
+
+function approveUser(id){
+    $.ajax({
+        url: `/api/users/${id}`,
+        type:'PUT',
+        data:{
+            approved: true
+        }
+    })
+    .done(() => window.location.reload())
+    .fail(() => alert('Failed!'));
+}
+
+function deleteLoadbalancer(id){
+    $.ajax({
+        url: `/api/domains/${id}`,
+        type:'DELETE'
+    })
+    .done(() => window.location.reload())
+    .fail(() => alert('Failed!'));
+}
+
+function createLoadbalancer(){
+    var subdomain = $('#textInput-modal-subdomain').val();
+    var host = $('#textInput-modal-host').val();
+    if(!$('#lbForm')[0].checkValidity()){
+        $('<input type="submit">').hide().appendTo($('#lbForm')).click().remove();
+        return;
+    }
+    toggleSpinner($('#lbSubmitButton'));
+    $.post('/api/domains',{
+        domain: {
+            domain: subdomain,
+            server_addr: host
+        }
+    }).done(() => {
+        window.location.reload();
+    })
         .fail((data) => {
             toggleSpinner($('#lbSubmitButton'));
             var errors = data.responseJSON.errors;
@@ -61,17 +126,7 @@ $(document).ready(function() {
                 setError($('#form-group-host'),errors.server_addr[0]);
             }
         });
-    });
-    $('.delete-domain').click((e) => {
-        let id = $(e.target).parent().data().domainId;
-        $.ajax({
-            url: `/api/domains/${id}`,
-            type:'DELETE'
-        })
-        .done(() => window.location.reload())
-        .fail(() => alert('Failed!'));
-    });
-});
+}
 
 function setError(formgroup, error) {
     formgroup.addClass('has-error');

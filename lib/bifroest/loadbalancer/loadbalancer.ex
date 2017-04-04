@@ -68,7 +68,7 @@ defmodule Bifroest.Loadbalancer do
       ** (Ecto.NoResultsError)
 
   """
-  def get_domain!(id), do: Repo.get!(Domain, id)
+  def get_domain!(id), do: Repo.get!(Domain, id) |> Repo.preload(:user)
 
   @doc """
   Creates a domain.
@@ -120,8 +120,8 @@ defmodule Bifroest.Loadbalancer do
       iex> delete_domain(domain,user)
       {:ok, %Domain{}}
   """
-  def delete_domain(%Domain{} = domain,user) do
-    if domain.user_id == user.id do
+  def delete_domain(%Domain{user: %User{is_admin: admin}} = domain, user) do
+    if domain.user_id == user.id || admin do
       del_domain(domain.domain)
       Repo.delete(domain)
     else

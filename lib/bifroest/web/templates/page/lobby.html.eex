@@ -1,0 +1,11 @@
+<div class="blank-slate-pf " id="">
+    <div class="blank-slate-pf-icon">
+        <span class="fa fa-ban"></span>
+    </div>
+    <h1>
+        Oh Snap!
+    </h1>
+    <p>
+        Your account has yet to be approved. Please try again soon!
+    </p>
+</div>

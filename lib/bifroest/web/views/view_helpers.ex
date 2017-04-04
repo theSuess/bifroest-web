@@ -10,4 +10,8 @@ defmodule Bifroest.Web.ViewHelpers do
   def all_domains() do
     Bifroest.Loadbalancer.list_domains() |> Bifroest.Repo.preload(:user)
   end
+
+  def all_users() do
+    Bifroest.Accounts.list_users()
+  end
 end

@@ -4,8 +4,8 @@ defmodule Bifroest.AccountsTest do
   alias Bifroest.Accounts
   alias Bifroest.Accounts.User
 
-  @create_attrs %{email: "some email", name: "some name", is_admin: true}
-  @update_attrs %{email: "some updated email", name: "some updated name", is_admin: false}
+  @create_attrs %{email: "some email", name: "some name", is_admin: true, is_permitted: false}
+  @update_attrs %{email: "some updated email", name: "some updated name", is_admin: false, is_permitted: true}
   @invalid_attrs %{email: nil, name: nil}
 
   def fixture(:user, attrs \\ @create_attrs) do
