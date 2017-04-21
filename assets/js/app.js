@@ -28,7 +28,7 @@ $(document).ready(function() {
     //initialize wizard
     var completeWizard = new wizard(".btn.wizard-pf-complete");
     // Row Checkbox Selection
-    $("input[type='checkbox']").change(function (e) {
+    $("input[type='checkbox']").change(function(e) {
         if ($(this).is(":checked")) {
             $(this).closest('.list-group-item').addClass("active");
         } else {
@@ -36,94 +36,113 @@ $(document).ready(function() {
         }
     });
     $('#lbSubmitButton').click(createLoadbalancer);
-    $('.delete-domain').click(withAttr('domainId',deleteLoadbalancer));
-    $('.approve-user').click(withAttr('userId',approveUser));
-    $('.reject-user').click(withAttr('userId',rejectUser));
-    $('.make-admin').click(withAttr('userId',makeUserAdmin));
+    $('.delete-domain').click(withAttr('domainId', deleteLoadbalancer));
+    $('.approve-user').click(withAttr('userId', approveUser));
+    $('.reject-user').click(withAttr('userId', rejectUser));
+    $('.make-admin').click(withAttr('userId', makeUserAdmin));
+    var table = $('#domain-table').DataTable({
+        select: {
+            selector: 'td:first-child input[type="checkbox"]',
+            style: 'multi'
+        },
+        columns: [
+            {name: "select",orderable: false},
+            {name: "domain",orderable: true},
+            {name: "user",orderable: true},
+            {name: "server_addr",orderable: true},
+            {name: "inserted_at",orderable: true},
+            {name: "actions",orderable: false},
+        ],
+        order: [[1,'asc']]
+    });
+    $('#selectAll').click(() => {
+        //table.rows().select();
+        $('.row-select').click();
+    });
 });
 
-function withAttr(attr,fn){
-    return function(e){
+function withAttr(attr, fn) {
+    return function(e) {
         var attrVal = $(e.target).data(attr);
-        if(attrVal === undefined){
+        if (attrVal === undefined) {
             attrVal = $(e.target).parent().data(attr);
         }
         fn(attrVal);
     };
 }
 
-function makeUserAdmin(id){
-    if(!confirm('Are you sure you want to make this user an Administrator?')){
+function makeUserAdmin(id) {
+    if (!confirm('Are you sure you want to make this user an Administrator?')) {
         return;
     }
     $.ajax({
-        url: `/api/users/${id}`,
-        type:'PUT',
-        data:{
-            admin: true
-        }
-    })
-    .done(() => window.location.reload())
-    .fail(() => alert('Failed!'));
+            url: `/api/users/${id}`,
+            type: 'PUT',
+            data: {
+                admin: true
+            }
+        })
+        .done(() => window.location.reload())
+        .fail(() => alert('Failed!'));
 }
 
-function rejectUser(id){
+function rejectUser(id) {
     $.ajax({
-        url: `/api/users/${id}`,
-        type:'PUT',
-        data:{
-            approved: false
-        }
-    })
-    .done(() => window.location.reload())
-    .fail(() => alert('Failed!'));
+            url: `/api/users/${id}`,
+            type: 'PUT',
+            data: {
+                approved: false
+            }
+        })
+        .done(() => window.location.reload())
+        .fail(() => alert('Failed!'));
 }
 
-function approveUser(id){
+function approveUser(id) {
     $.ajax({
-        url: `/api/users/${id}`,
-        type:'PUT',
-        data:{
-            approved: true
-        }
-    })
-    .done(() => window.location.reload())
-    .fail(() => alert('Failed!'));
+            url: `/api/users/${id}`,
+            type: 'PUT',
+            data: {
+                approved: true
+            }
+        })
+        .done(() => window.location.reload())
+        .fail(() => alert('Failed!'));
 }
 
-function deleteLoadbalancer(id){
+function deleteLoadbalancer(id) {
     $.ajax({
-        url: `/api/domains/${id}`,
-        type:'DELETE'
-    })
-    .done(() => window.location.reload())
-    .fail(() => alert('Failed!'));
+            url: `/api/domains/${id}`,
+            type: 'DELETE'
+        })
+        .done(() => window.location.reload())
+        .fail(() => alert('Failed!'));
 }
 
-function createLoadbalancer(){
+function createLoadbalancer() {
     var subdomain = $('#textInput-modal-subdomain').val();
     var host = $('#textInput-modal-host').val();
-    if(!$('#lbForm')[0].checkValidity()){
+    if (!$('#lbForm')[0].checkValidity()) {
         $('<input type="submit">').hide().appendTo($('#lbForm')).click().remove();
         return;
     }
     toggleSpinner($('#lbSubmitButton'));
-    $.post('/api/domains',{
-        domain: {
-            domain: subdomain,
-            server_addr: host
-        }
-    }).done(() => {
-        window.location.reload();
-    })
+    $.post('/api/domains', {
+            domain: {
+                domain: subdomain,
+                server_addr: host
+            }
+        }).done(() => {
+            window.location.reload();
+        })
         .fail((data) => {
             toggleSpinner($('#lbSubmitButton'));
             var errors = data.responseJSON.errors;
-            if(errors.domain){
-                setError($('#form-group-subdomain'),errors.domain[0]);
+            if (errors.domain) {
+                setError($('#form-group-subdomain'), errors.domain[0]);
             }
-            if(errors.server_addr){
-                setError($('#form-group-host'),errors.server_addr[0]);
+            if (errors.server_addr) {
+                setError($('#form-group-host'), errors.server_addr[0]);
             }
         });
 }
@@ -139,14 +158,15 @@ function toggleSpinner(button) {
 }
 
 var wizard = function(id) {
-    var self = this, modal, tabs, tabCount, tabLast, currentGroup, currentTab, contents;
+    var self = this,
+        modal, tabs, tabCount, tabLast, currentGroup, currentTab, contents;
     self.id = id;
 
     $(self.id).click(function() {
         self.init(this);
     });
 
-    this.init = function(button){
+    this.init = function(button) {
         // get id of open modal
         self.modal = $(button).data("target");
 
@@ -159,20 +179,18 @@ var wizard = function(id) {
         $(self.modal + " .wizard-pf-sidebar .list-group-item").each(function() {
             // set the first digit (i.e. n.0) equal to the index of the parent tab group
             // set the second digit (i.e. 0.n) equal to the index of the tab within the tab group
-            $(this).attr("data-tab", ($(this).parent().index() +1 + ($(this).index()/10 + .1)));
+            $(this).attr("data-tab", ($(this).parent().index() + 1 + ($(this).index() / 10 + .1)));
         });
         // assign data attribute to all tabgroups
         $(self.modal + " .wizard-pf-sidebar .list-group").each(function() {
             // set the value equal to the index of the tab group
-            $(this).attr("data-tabgroup", ($(this).index() +1));
+            $(this).attr("data-tabgroup", ($(this).index() + 1));
         });
 
         // create array of all tabs, using the data attribute, and determine the last tab
-        self.tabs = $(self.modal + " .wizard-pf-sidebar .list-group-item" ).map(function()
-                                                                                {
-                                                                                    return $(this).data("tab");
-                                                                                }
-                                                                               );
+        self.tabs = $(self.modal + " .wizard-pf-sidebar .list-group-item").map(function() {
+            return $(this).data("tab");
+        });
         self.tabCount = self.tabs.length;
         self.tabSummary = self.tabs[self.tabCount - 2]; // second to last tab displays summary
         self.tabLast = self.tabs[self.tabCount - 1]; // last tab displays progress
@@ -202,7 +220,7 @@ var wizard = function(id) {
         self.finishBtnClick();
         self.cancelBtnClick();
 
-        $( window ).resize(function() {
+        $(window).resize(function() {
             self.updateWizardLayout();
         });
     };
@@ -228,7 +246,7 @@ var wizard = function(id) {
         $(self.modal + " .wizard-pf-contents").addClass("hidden");
         $(self.modal + " .wizard-pf-contents:eq(" + tabIndex + ")").removeClass("hidden");
         // setting focus to first form field in active contents
-        setTimeout (function() {
+        setTimeout(function() {
             $(".wizard-pf-contents:not(.hidden) form input, .wizard-pf-contents:not(.hidden) form textarea, .wizard-pf-contents:not(.hidden) form select").first().focus(); // this does not account for disabled or read-only inputs
         }, 100);
     };
@@ -262,7 +280,7 @@ var wizard = function(id) {
     this.updateWizardLayout = function() {
         var top = ($(self.modal + " .modal-header").outerHeight() + $(self.modal + " .wizard-pf-steps").outerHeight()) + "px",
             bottom = $(self.modal + " .modal-footer").outerHeight() + "px",
-        sidebarwidth = $(self.modal + " .wizard-pf-sidebar").outerWidth() + "px";
+            sidebarwidth = $(self.modal + " .wizard-pf-sidebar").outerWidth() + "px";
         $(self.modal + " .wizard-pf-row").css("top", top);
         $(self.modal + " .wizard-pf-row").css("bottom", bottom);
         $(self.modal + " .wizard-pf-main").css("margin-left", sidebarwidth);
@@ -380,7 +398,7 @@ var wizard = function(id) {
         var newTab = self.tabs[tabIndex];
         // add/remove active class from current tab group
         // included math.round to trim off extra .000000000002 that was getting added
-        if (newTab != Math.round(10*(direction*.1 + self.currentTab))/10) {
+        if (newTab != Math.round(10 * (direction * .1 + self.currentTab)) / 10) {
             // this statement is true when the next tab is in the next tab group
             // if next tab is in next tab group (e.g. next tab data-tab value is
             // not equal to current tab +.1) then apply active class to next
@@ -404,7 +422,7 @@ var wizard = function(id) {
         // code for kicking off process goes here
         // the next code is just to simulate the expected experience, in that
         // when the process is complete, the success message etc. would display
-        setTimeout (function() {
+        setTimeout(function() {
             $(self.modal + " .wizard-pf-cancel").addClass("hidden");
             $(self.modal + " .wizard-pf-finish").addClass("hidden");
             $(self.modal + " .wizard-pf-close").removeClass("hidden");
