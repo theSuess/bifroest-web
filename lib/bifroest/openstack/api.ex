@@ -1,6 +1,6 @@
 defmodule Bifroest.Openstack.Api do
   require Logger
-  def new_token do
+  def new_token(project_id) do
     user = Application.get_env(:bifroest,:openstack_username)
     password = Application.get_env(:bifroest,:openstack_password)
     url = Application.get_env(:bifroest,:openstack_auth_url)
@@ -18,13 +18,18 @@ defmodule Bifroest.Openstack.Api do
                 }
               }
             }
+          },
+          scope: %{
+            project: %{
+              id: project_id
+            }
           }
         }
       }
     )
     case HTTPoison.post(url <> "/auth/tokens",body,[{"Content-Type","application/json"}]) do
       {:ok, %HTTPoison.Response{headers: [_,_,{"X-Subject-Token",token} | _],body: body}} ->
-        {:ok, %{"token" => %{"expires_at" => exp}}} = body |> Poison.decode
+        {:ok, %{"token" => %{"expires_at" => exp}}} = bd = body |> Poison.decode
         Logger.info("Aquired new token expiring at: #{exp}")
         {:ok, time,_} = DateTime.from_iso8601(exp)
         {:ok, {token,time}}

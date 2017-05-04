@@ -65,7 +65,7 @@ defmodule Bifroest.Web.AuthController do
     if user.is_admin do
       [:admin,:user]
     else
-      if user.is_permitted do
+      if user.project_id do
         [:user]
       else
         []

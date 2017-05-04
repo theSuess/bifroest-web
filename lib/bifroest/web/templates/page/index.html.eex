@@ -5,13 +5,20 @@
                 <h2 class="card-pf-title" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
                     <span class="pficon pficon-server"></span>
                     <%= d.domain %>
+                    <small><%= d.server_addr %></small>
                 </h2>
                 <div class="card-pf-body">
                     <p class="card-pf-aggregate-status-notifications">
                         <span class="card-pf-aggregate-status-notification">
-                        <a href="/editor/">
-                            <span class="fa fa-terminal"></span>
-                        </a>
+                                        <button
+                                            class="btn btn-default btn-edit"
+                                            data-toggle="modal"
+                                            data-target="#editModal"
+                                            data-id="<%= d.id %>"
+                                            data-domain="<%= d.domain %>"
+                                            data-username="<%= d.user.name %>"
+                                            data-server-addr="<%= d.server_addr %>"
+                                            type="button">Edit</button>
                         <a class="delete-domain" href="#" data-domain-id="<%= d.id %>">
                             <span class="pficon pficon-delete"></span>
                         </a>
@@ -43,3 +50,4 @@
         </div>
     </div>
 <% end %>
+<%= render "wizard.html", assigns %>

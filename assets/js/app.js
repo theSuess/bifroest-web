@@ -36,10 +36,43 @@ $(document).ready(function() {
         }
     });
     $('#lbSubmitButton').click(createLoadbalancer);
-    $('.delete-domain').click(withAttr('domainId', deleteLoadbalancer));
+    $('.delete-domain').click(withAttr('domainId', deleteDomain));
     $('.approve-user').click(withAttr('userId', approveUser));
     $('.reject-user').click(withAttr('userId', rejectUser));
     $('.make-admin').click(withAttr('userId', makeUserAdmin));
+    $('#editSave').click(withAttr('domainId',saveDomain));
+    $('#flavor-input').on('change',(event) => {
+        let data = event.target.selectedOptions[0].dataset;
+        $('#flavor-detail-ram').text(humanFileSize(data.ram * 1000 * 1000,true));
+        $('#flavor-detail-vcpus').text(data.vcpus);
+    });
+    $('#keypair-input').on('change',(event) => {
+        let data = event.target.selectedOptions[0].dataset;
+        $('#keypair-detail-fingerprint').text(data.fingerprint);
+    });
+    $('#network-input').on('change',(event) => {
+        let options = event.target.selectedOptions;
+        if(options.length > 1){
+            $('#network-details').removeClass('hidden');
+        } else {
+            $('#network-details').addClass('hidden');
+        }
+    });
+    $('#editModal').on('show.bs.modal',(event) => {
+        let button = $(event.relatedTarget);
+        let domain = button.data('domain');
+        let username = button.data('username');
+        let server_addr = button.data('server-addr');
+        let id = button.data('id');
+        var modal = $(this);
+        modal.find('.modal-title').text('Edit domain: ' + domain);
+        $('#editModal-host').val(server_addr);
+        $('#editModal-domain').val(domain);
+        $('#editModal-user').val(username);
+        $('#editDelete').data('domainId',id);
+        $('#editSave').data('domainId',id);
+    });
+
     var table = $('#domain-table').DataTable({
         select: {
             selector: 'td:first-child input[type="checkbox"]',
@@ -56,7 +89,6 @@ $(document).ready(function() {
         order: [[1,'asc']]
     });
     $('#selectAll').click(() => {
-        //table.rows().select();
         $('.row-select').click();
     });
 });
@@ -69,6 +101,39 @@ function withAttr(attr, fn) {
         }
         fn(attrVal);
     };
+}
+
+function humanFileSize(bytes, si) {
+    var thresh = si ? 1000 : 1024;
+    if(Math.abs(bytes) < thresh) {
+        return bytes + ' B';
+    }
+    var units = si
+        ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
+        : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+    var u = -1;
+    do {
+        bytes /= thresh;
+        ++u;
+    } while(Math.abs(bytes) >= thresh && u < units.length - 1);
+    return bytes.toFixed(1)+' '+units[u];
+}
+
+function saveDomain(id) {
+    let host = $('#editModal-host').val();
+    let domain = $('#editModal-domain').val();
+    $.ajax({
+        url: `/api/domains/${id}`,
+        type: 'PUT',
+        data: {
+            domain: {
+                server_addr: host,
+                domain: domain
+            }
+        }
+    })
+    .done(() => window.location.reload())
+    .fail(() => alert('Failed!'));
 }
 
 function makeUserAdmin(id) {
@@ -110,7 +175,7 @@ function approveUser(id) {
         .fail(() => alert('Failed!'));
 }
 
-function deleteLoadbalancer(id) {
+function deleteDomain(id) {
     $.ajax({
             url: `/api/domains/${id}`,
             type: 'DELETE'
@@ -235,6 +300,15 @@ var wizard = function(id) {
 
     // update which tab is active
     this.updateActiveTab = function() {
+        if(self.currentTab == self.tabSummary){
+            $('#review-name').text($('#name-input').val());
+            $('#review-image').text($('#image-input option:selected').text());
+            $('#review-flavor').text($('#flavor-input option:selected').text());
+            $('#review-keypair').text($('#keypair-input option:selected').text());
+            let networks = $('#network-input option:selected').toArray().map((v) => v.innerHTML).join(',');
+            $('#review-networks').text(networks);
+            $('#review-subdomain').text($('#subdomain-input').val());
+        }
         $(self.modal + " .list-group-item[data-tab='" + self.currentTab + "']").addClass("active");
         self.updateVisibleContents();
     };
@@ -271,7 +345,7 @@ var wizard = function(id) {
 
     // update display state of buttons in the footer
     this.updateWizardFooterDisplay = function() {
-        $(self.modal + " .wizard-pf-footer .disabled").removeClass("disabled")
+        $(self.modal + " .wizard-pf-footer .disabled").removeClass("disabled");
         self.updateBackBtnDisplay();
         self.updateNextBtnDisplay();
     };

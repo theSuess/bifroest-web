@@ -63,11 +63,31 @@ defmodule Bifroest.Accounts do
   {:error, %Ecto.Changeset{}}
 
   """
-  def create_user(attrs \\ %{}) do
-    Logger.info "Creating user"
+  def create_user(%{email: email} =attrs) do
     %User{}
     |> user_changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Approves a user and create the openstack login
+  """
+
+  def approve_user(%User{email: email} = user) do
+    Logger.info "Creating project"
+    {:ok, project_id} = Bifroest.Openstack.Identity.create_project(email)
+    Logger.info "Creating openstack user"
+    {:ok, user_id} = Bifroest.Openstack.Identity.create_user(email,project_id)
+    {:ok,project_id} = Bifroest.Openstack.Identity.assign_user(user_id,project_id)
+    user
+    |> user_changeset(%{project_id: project_id})
+    |> Repo.update()
+  end
+
+  def reject_user(%User{} = user) do
+    user
+    |> user_changeset(%{project_id: nil})
+    |> Repo.update()
   end
 
   @doc """
@@ -119,7 +139,7 @@ defmodule Bifroest.Accounts do
 
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email,:name,:is_admin,:is_permitted])
+    |> cast(attrs, [:email,:name,:is_admin,:project_id])
     |> validate_required([:email,:name])
     |> unique_constraint(:email)
   end

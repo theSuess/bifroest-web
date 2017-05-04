@@ -2,8 +2,7 @@
     <div class="modal-dialog modal-lg wizard-pf">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close wizard-pf-dismiss" aria-label="Close"><span
-                                                                                             aria-hidden="true">&times;</span></button>
+                <button type="button" class="close wizard-pf-dismiss" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <dt class="modal-title">New Server</dt>
             </div>
             <div class="modal-body wizard-pf-body clearfix">
@@ -40,14 +39,8 @@
                         <ul class="list-group hidden">
                             <li class="list-group-item">
                                 <a href="#">
-                                    <span class="wizard-pf-substep-number">2A.</span>
+                                    <span class="wizard-pf-substep-number">2.</span>
                                     <span class="wizard-pf-substep-title">Details</span>
-                                </a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="#">
-                                    <span class="wizard-pf-substep-number">2B.</span>
-                                    <span class="wizard-pf-substep-title">Settings</span>
                                 </a>
                             </li>
                         </ul>
@@ -76,15 +69,19 @@
                             <form class="form-horizontal">
                                 <!-- replacing id with data-id to pass build errors -->
                                 <div class="form-group required">
-                                    <label class="col-sm-2 control-label" for="textInput-markup">Name</label>
+                                    <label class="col-sm-2 control-label" for="name-input">Name</label>
                                     <div class="col-sm-10">
-                                        <input type="text" data-id="textInput-markup" class="form-control">
+                                        <input type="text" data-id="name-input" id="name-input" class="form-control">
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="descriptionInput-markup">Description (Optional)</label>
+                                <div class="form-group required">
+                                    <label class="col-sm-2 control-label" for="image-input">Image</label>
                                     <div class="col-sm-10">
-                                        <textarea data-id="descriptionInput-markup" class="form-control" rows="2"></textarea>
+                                        <select class="selectpicker" id="image-input">
+                                            <%= for i <- images() do %>
+                                                <option value="<%= i.id %>" data-description="<%= i.description %>" ><%= i.name %></option>
+                                            <% end %>
+                                        </select>
                                     </div>
                                 </div>
                             </form>
@@ -95,17 +92,51 @@
                                     <label class="col-sm-2 control-label" for="flavor-input">Flavor</label>
                                     <div class="col-sm-10">
                                         <select class="selectpicker" id="flavor-input">
-                                            <option>Mustard</option>
-                                            <option>Ketchup</option>
-                                            <option>Relish</option>
-                                            <option disabled>Onions</option>
+                                            <%= for f <- flavors() do %>
+                                                <option value="<%= f.id %>" data-ram="<%= f.ram %>" data-vcpus="<%= f.vcpus %>"><%= f.name %></option>
+                                            <% end %>
                                         </select>
                                     </div>
+                                    <div class="col-sm-10 col-sm-offset-2" id="flavor-details">
+                                        <dl>
+                                            <dt>Ram:</dt>
+                                            <dd id="flavor-detail-ram">Random access memory</dd>
+                                            <dt>VCPUs:</dt>
+                                            <dd id="flavor-detail-vcpus">Number of processors</dd>
+                                        </dl>
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="dolor">Dolor (Optional)</label>
+                                    <label class="col-sm-2 control-label" for="keypair-input">Keypair</label>
                                     <div class="col-sm-10">
-                                        <textarea id="dolor" class="form-control" rows="2"></textarea>
+                                        <select class="selectpicker" id="keypair-input">
+                                            <option data-fingerprint="-">None</option>
+                                            <%= for k <- keypairs(@conn) do %>
+                                                <option value="<%= k.name %>" data-fingerprint="<%= k.fingerprint %>"><%= k.name %></option>
+                                            <% end %>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-10 col-sm-offset-2" id="flavor-details">
+                                        <dl>
+                                            <dt>Fingerprint</dt>
+                                            <dd id="keypair-detail-fingerprint"></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="network-input">Networks</label>
+                                    <div class="col-sm-10">
+                                        <select class="selectpicker" id="network-input" multiple>
+                                            <%= for n <- networks() do %>
+                                                <option value="<%= n.id %>"><%= n.name %></option>
+                                            <% end %>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-10 col-sm-offset-2 hidden" id="network-details">
+                                        <div class="alert alert-info">
+                                            <span class="pficon pficon-info"></span>
+                                            <strong>You have selected multiple networks.</strong> This setup requires additional configuration by you.
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -113,31 +144,12 @@
                         <div class="wizard-pf-contents hidden">
                             <form class="form-horizontal">
                                 <div class="form-group required">
-                                    <label class="col-sm-2 control-label" for="aliquam">Aliquam</label>
+                                    <label class="col-sm-2 control-label" for="subdomain-input">Domain</label>
                                     <div class="col-sm-10">
-                                        <input type="text" id="aliquam" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="fermentum">Fermentum</label>
-                                    <div class="col-sm-10">
-                                        <textarea id="fermentum" class="form-control" rows="2"></textarea>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="wizard-pf-contents hidden">
-                            <form class="form-horizontal">
-                                <div class="form-group required">
-                                    <label class="col-sm-2 control-label" for="consectetur">Consectetur</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" id="consectetur" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="adipiscing">Adipiscing</label>
-                                    <div class="col-sm-10">
-                                        <textarea id="adipiscing" class="form-control" rows="2"></textarea>
+                                        <div class="input-group">
+                                            <input required type="text" id="subdomain-input" class="form-control">
+                                            <span class="input-group-addon"><%= domain_base() %></span>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -158,11 +170,11 @@
                                                         <form class="form">
                                                             <div class="wizard-pf-review-item">
                                                                 <span class="wizard-pf-review-item-label">Name:</span>
-                                                                <span class="wizard-pf-review-item-value">First Last</span>
+                                                                <span class="wizard-pf-review-item-value" id="review-name">server_name</span>
                                                             </div>
                                                             <div class="wizard-pf-review-item">
-                                                                <span class="wizard-pf-review-item-label">Description:</span>
-                                                                <span class="wizard-pf-review-item-value">This is the description</span>
+                                                                <span class="wizard-pf-review-item-label">Image:</span>
+                                                                <span class="wizard-pf-review-item-value" id="review-image">server_image</span>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -175,8 +187,16 @@
                                                     <div id="reviewStep1Substep2" class="wizard-pf-review-content">
                                                         <form class="form">
                                                             <div class="wizard-pf-review-item">
-                                                                <div class="wizard-pf-review-item-field">Setting A</div>
-                                                                <div class="wizard-pf-review-item-field">Setting B</div>
+                                                                <span class="wizard-pf-review-item-label">Flavor:</span>
+                                                                <span class="wizard-pf-review-item-value" id="review-flavor">server_flavor</span>
+                                                            </div>
+                                                            <div class="wizard-pf-review-item">
+                                                                <span class="wizard-pf-review-item-label">Keypair:</span>
+                                                                <span class="wizard-pf-review-item-value" id="review-keypair">server_keypair</span>
+                                                            </div>
+                                                            <div class="wizard-pf-review-item">
+                                                                <span class="wizard-pf-review-item-label">Networks:</span>
+                                                                <span class="wizard-pf-review-item-value" id="review-networks">server_networks</span>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -196,26 +216,8 @@
                                                     <div id="reviewStep2Substep1" class="wizard-pf-review-content">
                                                         <form class="form">
                                                             <div class="wizard-pf-review-item">
-                                                                <span class="wizard-pf-review-item-label">Name:</span>
-                                                                <span class="wizard-pf-review-item-value">First Last</span>
-                                                            </div>
-                                                            <div class="wizard-pf-review-item">
-                                                                <span class="wizard-pf-review-item-label">Description:</span>
-                                                                <span class="wizard-pf-review-item-value">This is the description</span>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </li>
-                                                <li class="list-group-item">
-                                                    <a onclick="$(this).toggleClass('collapsed'); $('#reviewStep2Substep2').toggleClass('collapse');">
-                                                        <span class="wizard-pf-substep-number">2B.</span>
-                                                        <span class="wizard-pf-substep-title">Settings</span>
-                                                    </a>
-                                                    <div id="reviewStep2Substep2" class="wizard-pf-review-content">
-                                                        <form class="form">
-                                                            <div class="wizard-pf-review-item">
-                                                                <div class="wizard-pf-review-item-field">Setting A</div>
-                                                                <div class="wizard-pf-review-item-field">Setting B</div>
+                                                                <span class="wizard-pf-review-item-label">Subdomain</span>
+                                                                <span class="wizard-pf-review-item-value"><span id="review-subdomain"></span><small><%= domain_base() %></small></span>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -307,6 +309,50 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="lbSubmitButton"><span>Save</span><div class="spinner spinner-inverse hidden"></div></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="editModalLabel">Edit Loadbalancer</h4>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" class="form-horizontal">
+                    <div id="form-group-host" class="form-group">
+                        <label class="col-sm-3 control-label" for="editModal-user">Created by</label>
+                        <div class="col-sm-9">
+                            <input disabled type="text" id="editModal-user" class="form-control">
+                        </div>
+                    </div>
+                    <div id="form-group-host" class="form-group">
+                        <label class="col-sm-3 control-label" for="editModal-host">Host</label>
+                        <div class="col-sm-9">
+                            <input required type="url" id="editModal-host" class="form-control">
+                            <span class="help-block hidden">Please correct the error</span>
+                        </div>
+                    </div>
+                    <div id="form-group-subdomain" class="form-group">
+                        <label class="col-sm-3 control-label" for="editModal-domain">Subdomain</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <input required type="text" id="editModal-domain" class="form-control">
+                                <span class="input-group-addon"><%= domain_base() %></span>
+                            </div>
+                            <span class="help-block hidden">Please correct the error</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger delete-domain" id="editDelete">Delete</button>
+                <button type="button" class="btn btn-primary" id="editSave">Save</button>
             </div>
         </div>
     </div>

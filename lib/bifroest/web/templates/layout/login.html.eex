@@ -53,9 +53,9 @@
             <% end %>
 
         </div>
-        <span id="badge">
-            <img src="//assets/img/logo.svg" alt=" logo" />
-        </span>
+        <!-- <span id="badge"> -->
+        <!-- <img src="//assets/img/logo.svg" alt=" logo" /> -->
+        <!-- </span> -->
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">

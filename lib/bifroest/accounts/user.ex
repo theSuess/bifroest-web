@@ -5,7 +5,7 @@ defmodule Bifroest.Accounts.User do
     field :email, :string
     field :name, :string
     field :is_admin, :boolean
-    field :is_permitted, :boolean
+    field :project_id, :string
 
     timestamps()
   end

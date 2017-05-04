@@ -58,7 +58,6 @@
         <nav class="navbar navbar-pf-vertical">
             <div class="navbar-header">
                 <a href="/" class="navbar-brand">
-                    <img class="navbar-brand-icon" src="//assets/img/logo-alt.svg" alt="">
                     <span class="navbar-brand-name">
                         <b>Bifröst</b> Management Console
                     </span>
@@ -118,7 +117,6 @@
         <div class="container-fluid container-cards-pf">
             <%= render @view_module, @view_template, assigns %>
         </div>
-        <%= render "wizard.html" %>
         <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
         <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
     </body>

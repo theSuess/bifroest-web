@@ -9,7 +9,7 @@
             <div class="card-pf-body">
                 <table class="table table-striped table-bordered table-hover" id="domain-table">
                     <thead>
-<th><label class="sr-only" for="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll"></th>
+                        <th><label class="sr-only" for="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll"></th>
                         <th>Subdomain</th>
                         <th>User</th>
                         <th>Host</th>
@@ -18,18 +18,28 @@
                     </thead>
 
                     <tbody>
-                    <%= for d <- all_domains() do %>
-                        <tr>
-                            <td><input class="row-select" type="checkbox"/></td>
-                            <td><%= d.domain %></td>
-                            <td><%= d.user.name %></td>
-                            <td><%= d.server_addr %></td>
-                            <td><%= d.inserted_at %></td>
-                            <td class="table-view-pf-actions">
-                                <div class="table-view-pf-btn"><button class="btn btn-default" type="button">Edit</button></div>
-                            </td>
-                        </tr>
-                    <% end %>
+                        <%= for d <- all_domains() do %>
+                            <tr>
+                                <td><input class="row-select" type="checkbox"/></td>
+                                <td><%= d.domain %></td>
+                                <td><%= d.user.name %></td>
+                                <td><%= d.server_addr %></td>
+                                <td><%= d.inserted_at %></td>
+                                <td class="table-view-pf-actions">
+                                    <div class="table-view-pf-btn">
+                                        <button
+                                            class="btn btn-default btn-edit"
+                                            data-toggle="modal"
+                                            data-target="#editModal"
+                                            data-id="<%= d.id %>"
+                                            data-domain="<%= d.domain %>"
+                                            data-username="<%= d.user.name %>"
+                                            data-server-addr="<%= d.server_addr %>"
+                                            type="button">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% end %>
                     </tbody>
                 </table>
             </div>
@@ -46,7 +56,7 @@
                     <%= for u <- all_users() do %>
                         <div class="list-group-item list-view-pf-stacked list-view-pf-top-align">
                             <div class="list-view-pf-actions">
-                                <%= if !u.is_permitted do %>
+                                <%= if !u.project_id do %>
                                     <button class="approve-user btn btn-primary" data-user-id="<%= u.id %>">Approve</button>
                                 <% else %>
                                     <button class="reject-user btn btn-danger" data-user-id="<%= u.id %>">Reject</button>
@@ -61,7 +71,7 @@
                                         <div class="<%= if u.is_admin, do: "user-admin" %> list-group-item-heading">
                                             <%= u.name %>
                                             <%= if u.is_admin do %>
-                                            <small>This user is an Admin</small>
+                                                <small>This user is an Admin</small>
                                             <% end %>
                                         </div>
                                         <div class="list-group-item-text">
@@ -77,3 +87,4 @@
         </div>
     </div>
 </div>
+<%= render "wizard.html", assigns %>

@@ -7,13 +7,25 @@ defmodule Bifroest.Web.UserController do
 
   action_fallback Bifroest.Web.FallbackController
 
+  def update(conn, %{"id" => raw_id, "approved" => "false"}) do
+    {id,_} = Integer.parse(raw_id)
+    current_user = Guardian.Plug.current_resource(conn)
+    user = Accounts.get_user!(id)
+    if current_user.is_admin do
+      with {:ok, %User{} = user} <- Accounts.reject_user(user) do
+        render(conn, "show.json", user: user)
+      end
+    else
+      send_resp(conn, :forbidden,"")
+    end
+  end
+
   def update(conn, %{"id" => raw_id, "approved" => approved}) do
     {id,_} = Integer.parse(raw_id)
     current_user = Guardian.Plug.current_resource(conn)
     user = Accounts.get_user!(id)
     if current_user.is_admin do
-      params = %{"is_permitted" => approved}
-      with {:ok, %User{} = user} <- Accounts.update_user(user, params) do
+      with {:ok, %User{} = user} <- Accounts.approve_user(user) do
         render(conn, "show.json", user: user)
       end
     else

@@ -31,10 +31,16 @@ defmodule Bifroest.Web.DomainController do
 
   def update(conn, %{"id" => id, "domain" => domain_params}) do
     domain = Loadbalancer.get_domain!(id)
-
-    with {:ok, %Domain{} = domain} <- Loadbalancer.update_domain(domain, domain_params) do
-      render(conn, "show.json", domain: domain)
+    {:ok, domain}
+    current_user = Guardian.Plug.current_resource(conn)
+    if current_user.is_admin || domain.user_id == current_user.id do
+      with {:ok, %Domain{} = domain} <- Loadbalancer.update_domain(domain, domain_params) do
+        render(conn, "show.json", domain: domain)
+      end
+    else
+      send_resp(conn, :forbidden,"")
     end
+
   end
 
   def delete(conn, %{"id" => id}) do
