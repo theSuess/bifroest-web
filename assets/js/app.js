@@ -26,7 +26,7 @@ $(document).off('click.bs.dropdown.data-api', '.dropdown form');
 
 $(document).ready(function() {
     //initialize wizard
-    var completeWizard = new wizard(".btn.wizard-pf-complete");
+    var completeWizard = new wizard("#createServer");
     // Row Checkbox Selection
     $("input[type='checkbox']").change(function(e) {
         if ($(this).is(":checked")) {
@@ -91,6 +91,7 @@ $(document).ready(function() {
     $('#selectAll').click(() => {
         $('.row-select').click();
     });
+    $('.wizard-pf-complete button').click(() => window.location.replace('/'));
 });
 
 function withAttr(attr, fn) {
@@ -210,6 +211,28 @@ function createLoadbalancer() {
                 setError($('#form-group-host'), errors.server_addr[0]);
             }
         });
+}
+
+function createServer(domain,flavorRef,imageRef,name,networks) {
+    return new Promise((resolve) => {
+            $.ajax({
+            url: `/api/domains`,
+            contentType: 'application/json',
+            dataType: 'json',
+            type: 'POST',
+            data: JSON.stringify({
+                domain: {
+                    domain: domain
+                },
+                server: {
+                    flavorRef: flavorRef,
+                    imageRef: imageRef,
+                    name: name,
+                    networks: networks.map((x) => {return {uuid: x};})
+                }
+            })
+        }).done(resolve);
+    });
 }
 
 function setError(formgroup, error) {
@@ -493,16 +516,22 @@ var wizard = function(id) {
     this.finish = function() {
         $(self.modal + " .wizard-pf-back").addClass("disabled"); // if Back remains enabled during this step, then the Close button needs to be removed when the user clicks Back
         $(self.modal + " .wizard-pf-finish").addClass("disabled");
-        // code for kicking off process goes here
-        // the next code is just to simulate the expected experience, in that
-        // when the process is complete, the success message etc. would display
-        setTimeout(function() {
+
+
+        let name = $('#name-input').val();
+        let image = $('#image-input').val();
+        let flavor = $('#flavor-input').val();
+        let keypair = $('#keypair-input').val();
+        let networks = $('#network-input').val();
+        let domain = $('#subdomain-input').val();
+
+        createServer(domain,flavor,image,name,networks).then(() => {
             $(self.modal + " .wizard-pf-cancel").addClass("hidden");
             $(self.modal + " .wizard-pf-finish").addClass("hidden");
             $(self.modal + " .wizard-pf-close").removeClass("hidden");
             $(self.modal + " .wizard-pf-process").addClass("hidden");
             $(self.modal + " .wizard-pf-complete").removeClass("hidden");
-        }, 3000);
+        });
     };
 
 };

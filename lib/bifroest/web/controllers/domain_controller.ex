@@ -4,12 +4,45 @@ defmodule Bifroest.Web.DomainController do
   require Logger
   alias Bifroest.Loadbalancer
   alias Bifroest.Loadbalancer.Domain
+  alias Bifroest.Openstack.Compute
+  alias Bifroest.Openstack.Compute.Server
 
   action_fallback Bifroest.Web.FallbackController
+
+  @internal_network_name Application.get_env(:bifroest, :internal_network_name)
 
   def index(conn, _params) do
     domains = Loadbalancer.list_domains()
     render(conn, "index.json", domains: domains)
+  end
+
+  def create(conn, %{"server" => server_params, "domain" => domain_req_params}) do
+    server = to_struct(Server, server_params)
+    user = Guardian.Plug.current_resource(conn)
+    result = with domain_params <- Map.put(domain_req_params,"user_id", user.id),
+         {:ok, %Server{id: server_id}} <- Compute.create_server(server, user.project_id),
+         :ok <- Process.sleep(5000),
+         {:ok, %Server{addresses: %{@internal_network_name => [%{"addr" => addr}]}}} <- Compute.get_server(server_id,user.project_id),
+         server_addr <- build_url(addr),
+         final_params <- Map.put(domain_params,"server_addr", server_addr) |> Map.put("server_id",server_id),
+         {:ok, %Domain{} = domain} <- Loadbalancer.create_domain(final_params)
+    do
+      {:ok, domain}
+    end
+    case result do
+      {:ok, domain} ->
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", domain_path(conn, :show, domain))
+        |> render("show.json", domain: domain)
+      otherwise ->
+        IO.inspect otherwise
+        conn |> redirect(to: "/")
+    end
+  end
+
+  defp build_url(url) do
+    "http://#{url}:80/"
   end
 
   def create(conn, %{"domain" => request_params}) do
@@ -48,6 +81,16 @@ defmodule Bifroest.Web.DomainController do
     user = Guardian.Plug.current_resource(conn)
     with {:ok, %Domain{}} <- Loadbalancer.delete_domain(domain,user) do
       send_resp(conn, :no_content, "")
+    end
+  end
+
+  defp to_struct(kind, attrs) do
+    struct = struct(kind)
+    Enum.reduce Map.to_list(struct), struct, fn {k, _}, acc ->
+      case Map.fetch(attrs, Atom.to_string(k)) do
+        {:ok, v} -> %{acc | k => v}
+        :error -> acc
+      end
     end
   end
 end

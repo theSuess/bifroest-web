@@ -15,12 +15,14 @@ config :bifroest,
   default_role_id: "8d25f9a481e44124b8f1d0071ff0f247",
   admin_role_id: "bb523f0c846c4c74a660f4ef52e66af0",
   admin_user_id: "3328200144804bc3a75bd373408008dd",
+  internal_network_name: "openstack",
   openstack_username: System.get_env("OS_USERNAME"),
   openstack_password: System.get_env("OS_PASSWORD"),
   openstack_auth_url: System.get_env("OS_AUTH_URL"),
   openstack_compute_url: System.get_env("OS_COMPUTE_URL"),
   openstack_image_url: System.get_env("OS_IMAGE_URL"),
-  openstack_network_url: System.get_env("OS_NETWORK_URL")
+  openstack_network_url: System.get_env("OS_NETWORK_URL"),
+  openstack_horizon_url: System.get_env("OS_HORIZON_URL")
 
 # Configures the endpoint
 config :bifroest, Bifroest.Web.Endpoint,

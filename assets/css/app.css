@@ -39,3 +39,8 @@
 .user-admin {
     color: red;
 }
+
+.add-button {
+    color: #363636;
+    font-size: 3em;
+}

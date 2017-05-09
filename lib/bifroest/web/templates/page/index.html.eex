@@ -10,15 +10,20 @@
                 <div class="card-pf-body">
                     <p class="card-pf-aggregate-status-notifications">
                         <span class="card-pf-aggregate-status-notification">
-                                        <button
-                                            class="btn btn-default btn-edit"
-                                            data-toggle="modal"
-                                            data-target="#editModal"
-                                            data-id="<%= d.id %>"
-                                            data-domain="<%= d.domain %>"
-                                            data-username="<%= d.user.name %>"
-                                            data-server-addr="<%= d.server_addr %>"
-                                            type="button">Edit</button>
+                            <a
+                                data-toggle="modal"
+                                data-target="#editModal"
+                                data-id="<%= d.id %>"
+                                data-domain="<%= d.domain %>"
+                                data-username="<%= d.user.name %>"
+                                data-server-addr="<%= d.server_addr %>">
+                                <span class="pficon pficon-edit"></span>
+                            </a>
+                        <%= if d.server_id != nil do %>
+                            <a target="_blank" href="<%= horizon_url(d.server_id) %>">
+                                <span class="pficon pficon-cluster"></span>
+                            </a>
+                        <% end %>
                         <a class="delete-domain" href="#" data-domain-id="<%= d.id %>">
                             <span class="pficon pficon-delete"></span>
                         </a>
@@ -28,8 +33,30 @@
             </div>
         </div>
     <% end %>
-    <button class="btn btn-default wizard-pf-open wizard-pf-complete" data-target="#complete">Create a server</button>
-    <button class="btn btn-default" data-toggle="modal" data-target="#lbModal">Create a loadbalancer</button>
+    <div class="col-xs-12 col-sm-6 col-md-3">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                Create Server
+            </h2>
+            <div class="card-pf-body">
+                <a id="createServer" data-target="#complete">
+                    <span class="add-button pficon pficon-add-circle-o"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-3">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                Create Loadbalancer
+            </h2>
+            <div class="card-pf-body">
+                <a id="createServer" data-toggle="modal" data-target="#lbModal">
+                    <span class="add-button pficon pficon-add-circle-o"></span>
+                </a>
+            </div>
+        </div>
+    </div>
 <%= else %>
     <div class="blank-slate-pf " id="">
         <div class="blank-slate-pf-icon">

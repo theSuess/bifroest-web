@@ -4,6 +4,10 @@ defmodule Bifroest.Web.ViewHelpers do
   def logged_in?(conn), do: Guardian.Plug.authenticated?(conn)
   def organization_name(), do: Application.get_env(:bifroest,:organization_name)
   def domain_base(), do: Application.get_env(:bifroest,:domain_base)
+  defp horizon_base(), do: Application.get_env(:bifroest, :openstack_horizon_url)
+  def horizon_url(id) do
+    "#{horizon_base()}/project/instances/#{id}"
+  end
 
   def domains(conn) do
     user = current_user(conn)

@@ -146,7 +146,7 @@ defmodule Bifroest.Loadbalancer do
 
   defp domain_changeset(%Domain{} = domain, attrs) do
     domain
-    |> cast(attrs, [:domain, :server_addr, :user_id])
+    |> cast(attrs, [:domain, :server_addr, :server_id, :user_id])
     |> validate_required([:domain, :server_addr, :user_id])
     |> validate_url(:server_addr)
     |> unique_constraint(:domain)

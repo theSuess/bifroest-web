@@ -8,7 +8,17 @@ defmodule Bifroest.Openstack.Compute do
   end
 
   defmodule Server do
-    defstruct [:id, :name, :imageRef, :flavorRef, :networks]
+    defstruct [:id,
+               :name,
+               :imageRef,
+               :flavorRef,
+               :networks,
+               :adminPass,
+               :addresses
+              ]
+    defmodule Address do
+      defstruct [:addr,:version]
+    end
   end
 
   import Bifroest.Openstack.Base
@@ -40,20 +50,28 @@ defmodule Bifroest.Openstack.Compute do
   end
 
   def create_server(%Server{} = server, project_id) do
-    {:ok,srv} = Poison.encode(%{"server" => server})
-    body = strip_json_null(srv)
+    {:ok, body} = server
+    |> Map.from_struct
+    |> Enum.filter(fn {_, v} -> v != nil end)
+    |> Enum.into(%{})
+    |> (fn srv -> %{"server" => srv} end).()
+    |> Poison.encode
     case HTTPoison.post(@url <> "/#{project_id}/servers",body,headers(project_id)) do
       {:ok, %HTTPoison.Response{body: body, status_code: 202}} ->
-        {:ok, resp} = body |> Poison.decode
-        resp
+        {:ok, %{"server" => resp}} = body |> Poison.decode(as: %{"server" => %Server{}})
+        {:ok, resp}
       {:ok, %HTTPoison.Response{body: body}} ->
-        {:ok, resp} = body |> Poison.decode
+        {:ok, resp} = body
         {:error, resp}
       _ -> {:error, "Unable to create server"}
     end
   end
 
-  defp strip_json_null(string) do
-    Regex.replace(~r/\"([^\"]+)\":null(,?)/, string, "")
+  def get_server(id, project_id) do
+    case HTTPoison.get(@url <> "/#{project_id}/servers/#{id}",headers(project_id)) do
+      {:ok, %HTTPoison.Response{body: body, status_code: 200}} ->
+        {:ok, %{"server" => resp}} = body |> Poison.decode(as: %{"server" => %Server{}})
+        {:ok, resp}
+    end
   end
 end
