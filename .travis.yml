@@ -11,14 +11,15 @@ services:
 notifications:
   email: false
 env:
-  - MIX_ENV=test
-  - OS_USERNAME=foo
-  - OS_PASSWORD=bar
-  - OS_AUTH_URL=http://example.com
-  - OS_COMPUTE_URL=http://example.com
-  - OS_IMAGE_URL="http://example.com
-  - OS_NETWORK_URL="http://example.com
-  - OS_HORIZON_URL="http://example.com
+  global:
+    - MIX_ENV=test
+    - OS_USERNAME=foo
+    - OS_PASSWORD=bar
+    - OS_AUTH_URL="http://example.com"
+    - OS_COMPUTE_URL="http://example.com"
+    - OS_IMAGE_URL="http://example.com"
+    - OS_NETWORK_URL="http://example.com"
+    - OS_HORIZON_URL="http://example.com"
 
 
 before_script:
