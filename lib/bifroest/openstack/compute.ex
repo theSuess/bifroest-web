@@ -74,4 +74,10 @@ defmodule Bifroest.Openstack.Compute do
         {:ok, resp}
     end
   end
+
+  def delete_server(%Server{id: id}, project_id) do
+    case HTTPoison.delete(@url <> "/#{project_id}/servers/#{id}",headers(project_id)) do
+      {:ok, %HTTPoison.Response{body: body, status_code: 204}} -> :ok
+    end
+  end
 end
