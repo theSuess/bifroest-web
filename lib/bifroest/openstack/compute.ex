@@ -14,7 +14,8 @@ defmodule Bifroest.Openstack.Compute do
                :flavorRef,
                :networks,
                :adminPass,
-               :addresses
+               :addresses,
+               :key_name
               ]
     defmodule Address do
       defstruct [:addr,:version]

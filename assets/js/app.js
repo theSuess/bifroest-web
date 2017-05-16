@@ -213,7 +213,7 @@ function createLoadbalancer() {
         });
 }
 
-function createServer(domain,flavorRef,imageRef,name,networks) {
+function createServer(domain,flavorRef,imageRef,name,networks,keyName) {
     return new Promise((resolve) => {
             $.ajax({
             url: `/api/domains`,
@@ -228,6 +228,7 @@ function createServer(domain,flavorRef,imageRef,name,networks) {
                     flavorRef: flavorRef,
                     imageRef: imageRef,
                     name: name,
+                    key_name: keyName,
                     networks: networks.map((x) => {return {uuid: x};})
                 }
             })
@@ -524,8 +525,9 @@ var wizard = function(id) {
         let keypair = $('#keypair-input').val();
         let networks = $('#network-input').val();
         let domain = $('#subdomain-input').val();
+        let keyName = $('#keypair-input').val();
 
-        createServer(domain,flavor,image,name,networks).then(() => {
+        createServer(domain,flavor,image,name,networks,keyName).then(() => {
             $(self.modal + " .wizard-pf-cancel").addClass("hidden");
             $(self.modal + " .wizard-pf-finish").addClass("hidden");
             $(self.modal + " .wizard-pf-close").removeClass("hidden");

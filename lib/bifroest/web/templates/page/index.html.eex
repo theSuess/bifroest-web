@@ -72,7 +72,7 @@
             Learn more about this <a href="#">on the documentation</a>.
         </p>
         <div class="blank-slate-pf-main-action">
-            <button class="btn btn-primary btn-lg wizard-pf-open wizard-pf-complete" data-target="#complete">Create a server</button>
+            <button id="createServer" class="btn btn-primary btn-lg wizard-pf-open wizard-pf-complete" data-target="#complete">Create a server</button>
             <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#lbModal">Create a loadbalancer</button>
         </div>
     </div>
