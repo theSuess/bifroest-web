@@ -526,6 +526,9 @@ var wizard = function(id) {
         let networks = $('#network-input').val();
         let domain = $('#subdomain-input').val();
         let keyName = $('#keypair-input').val();
+        if(keyName === 'None'){
+            keyName = undefined;
+        }
 
         createServer(domain,flavor,image,name,networks,keyName).then(() => {
             $(self.modal + " .wizard-pf-cancel").addClass("hidden");
