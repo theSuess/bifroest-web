@@ -18,7 +18,7 @@ defmodule Bifroest.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Bifroest.Application, []},
-     extra_applications: [:logger, :ueberauth_google, :wobserver, :httpoison]]
+     extra_applications: [:logger, :ueberauth_google, :wobserver, :httpoison, :bamboo]]
   end
 
   # Specifies which paths to compile per environment.
@@ -43,6 +43,8 @@ defmodule Bifroest.Mixfile do
      {:httpoison, "~> 0.11.0"},
      {:exredis, ">= 0.2.4"},
      {:exrm, "~> 1.0"},
+     {:bamboo, "~> 0.7"},
+     {:bamboo_smtp, "~> 1.2.1"},
      {:cowboy, "~> 1.0"}]
   end
 

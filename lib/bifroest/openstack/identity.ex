@@ -21,6 +21,9 @@ defmodule Bifroest.Openstack.Identity do
       {:ok, %HTTPoison.Response{status_code: 201,body: body}} ->
         {:ok, %{"user" => %{"id" => user_id}}} = body |> Poison.decode
         Logger.info "Created User `#{email}` with password #{password}"
+        resp = Bifroest.Web.Email.password_email(email,password) |> Bifroest.Mailer.deliver_later
+        IO.inspect resp
+        Logger.info "Sent email"
         {:ok, user_id}
       _ -> {:error, "Could not create User"}
     end

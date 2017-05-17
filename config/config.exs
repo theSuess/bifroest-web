@@ -24,6 +24,17 @@ config :bifroest,
   openstack_network_url: System.get_env("OS_NETWORK_URL"),
   openstack_horizon_url: System.get_env("OS_HORIZON_URL")
 
+# In your config/config.exs file
+config :bifroest, Bifroest.Mailer,
+  adapter: Bamboo.SMTPAdapter,
+  server: "smtp.mailgun.org",
+  port: 587,
+  username: System.get_env("SMTP_USERNAME"),
+  password: System.get_env("SMTP_PASSWORD"),
+  tls: :if_available, # can be `:always` or `:never`
+  ssl: false, # can be `true`
+  retries: 1
+
 # Configures the endpoint
 config :bifroest, Bifroest.Web.Endpoint,
   url: [host: "localhost"],

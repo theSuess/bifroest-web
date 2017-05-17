@@ -1,0 +1,12 @@
+<p>
+    Your server <i><%= @name %></i> has been successfully deployed!
+</p>
+<p>
+    You can see it <a href="<%= horizon_url(@server_id) %>">here</a>
+</p>
+
+<p>
+    The Admin Password for your instance is: <code><%= @admin_password %></code> <br>
+
+    If your image does not require one, you can safely ingore this information.
+</p>

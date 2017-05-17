@@ -16,11 +16,12 @@ defmodule Bifroest.Web.DomainController do
     render(conn, "index.json", domains: domains)
   end
 
-  def create(conn, %{"server" => server_params, "domain" => domain_req_params}) do
+  def create(conn, %{"server" => %{"name" => name} = server_params, "domain" => domain_req_params}) do
     server = to_struct(Server, server_params)
     user = Guardian.Plug.current_resource(conn)
     result = with domain_params <- Map.put(domain_req_params,"user_id", user.id),
-         {:ok, %Server{id: server_id}} <- Compute.create_server(server, user.project_id),
+         {:ok, %Server{id: server_id, adminPass: pwd}} <- Compute.create_server(server, user.project_id),
+         %Bamboo.Email{} = Bifroest.Web.Email.server_email(user.email, name, pwd, server_id) |> Bifroest.Mailer.deliver_later,
          :ok <- Process.sleep(5000),
          {:ok, %Server{addresses: %{@internal_network_name => [%{"addr" => addr}]}}} <- Compute.get_server(server_id,user.project_id),
          server_addr <- build_url(addr),
