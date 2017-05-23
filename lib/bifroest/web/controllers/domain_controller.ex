@@ -16,7 +16,7 @@ defmodule Bifroest.Web.DomainController do
     render(conn, "index.json", domains: domains)
   end
 
-  def create(conn, %{"server" => %{"name" => name} = server_params, "domain" => domain_req_params}) do
+  def create(conn, %{"server" => %{"name" => name, "public" => public} = server_params, "domain" => domain_req_params}) do
     server = to_struct(Server, server_params)
     user = Guardian.Plug.current_resource(conn)
     result = with domain_params <- Map.put(domain_req_params,"user_id", user.id),
@@ -85,10 +85,17 @@ defmodule Bifroest.Web.DomainController do
     end
   end
 
-  defp to_struct(kind, attrs) do
+  defp to_struct(kind, %{"public" => public} = attrs) do
     struct = struct(kind)
+    int_net = Application.get_env(:bifroest, :internal_network_id)
+    srv = if public do
+      pub_net = Application.get_env(:bifroest, :public_network_id)
+      Map.put(attrs, "networks", [%{uuid: pub_net},%{uuid: int_net}])
+    else
+      Map.put(attrs, "networks", [%{uuid: int_net}])
+    end
     Enum.reduce Map.to_list(struct), struct, fn {k, _}, acc ->
-      case Map.fetch(attrs, Atom.to_string(k)) do
+      case Map.fetch(srv, Atom.to_string(k)) do
         {:ok, v} -> %{acc | k => v}
         :error -> acc
       end

@@ -124,18 +124,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="network-input">Networks</label>
+                                    <label class="col-sm-2 control-label" for="public-input">Public IP?</label>
                                     <div class="col-sm-10">
-                                        <select class="selectpicker" id="network-input" multiple>
-                                            <%= for n <- networks() do %>
-                                                <option value="<%= n.id %>"><%= n.name %></option>
-                                            <% end %>
-                                        </select>
+                                        <input id="public-input" name="public-input" type="checkbox"/>
                                     </div>
                                     <div class="col-sm-10 col-sm-offset-2 hidden" id="network-details">
                                         <div class="alert alert-info">
                                             <span class="pficon pficon-info"></span>
-                                            <strong>You have selected multiple networks.</strong> This setup requires additional configuration by you.
+                                            <strong>You have selected multiple networks.</strong> This setup requires additional configuration on the server.
                                         </div>
                                     </div>
                                 </div>
@@ -195,8 +191,8 @@
                                                                 <span class="wizard-pf-review-item-value" id="review-keypair">server_keypair</span>
                                                             </div>
                                                             <div class="wizard-pf-review-item">
-                                                                <span class="wizard-pf-review-item-label">Networks:</span>
-                                                                <span class="wizard-pf-review-item-value" id="review-networks">server_networks</span>
+                                                                <span class="wizard-pf-review-item-label">Public?:</span>
+                                                                <span class="wizard-pf-review-item-value" id="review-networks">True</span>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -232,12 +228,11 @@
                             <div class="wizard-pf-process blank-slate-pf">
                                 <div class="spinner spinner-lg blank-slate-pf-icon"></div>
                                 <h3 class="blank-slate-pf-main-action">Deployment in progress</h3>
-                                <p class="blank-slate-pf-secondary-action">Lorem ipsum dolor sit amet, porta at suspendisse ac, ut wisi vivamus, lorem sociosqu eget nunc amet. </p>
                             </div>
                             <div class="wizard-pf-complete blank-slate-pf hidden">
                                 <div class="wizard-pf-success-icon"><span class="glyphicon glyphicon-ok-circle"></span></div>
                                 <h3 class="blank-slate-pf-main-action">Deployment was successful</h3>
-                                <p class="blank-slate-pf-secondary-action">Lorem ipsum dolor sit amet, porta at suspendisse ac, ut wisi vivamus, lorem sociosqu eget nunc amet. </p>
+                                <p class="blank-slate-pf-secondary-action">You have received an email with the deployment details</p>
                                 <button type="button" class="btn btn-lg btn-primary">
                                     View Deployment
                                 </button>

@@ -50,9 +50,8 @@ $(document).ready(function() {
         let data = event.target.selectedOptions[0].dataset;
         $('#keypair-detail-fingerprint').text(data.fingerprint);
     });
-    $('#network-input').on('change',(event) => {
-        let options = event.target.selectedOptions;
-        if(options.length > 1){
+    $('#public-input').on('change',(event) => {
+        if(event.target.checked){
             $('#network-details').removeClass('hidden');
         } else {
             $('#network-details').addClass('hidden');
@@ -213,7 +212,7 @@ function createLoadbalancer() {
         });
 }
 
-function createServer(domain,flavorRef,imageRef,name,networks,keyName) {
+function createServer(domain,flavorRef,imageRef,name,pub,keyName) {
     return new Promise((resolve) => {
             $.ajax({
             url: `/api/domains`,
@@ -229,7 +228,7 @@ function createServer(domain,flavorRef,imageRef,name,networks,keyName) {
                     imageRef: imageRef,
                     name: name,
                     key_name: keyName,
-                    networks: networks.map((x) => {return {uuid: x};})
+                    public: pub
                 }
             })
         }).done(resolve);
@@ -329,8 +328,7 @@ var wizard = function(id) {
             $('#review-image').text($('#image-input option:selected').text());
             $('#review-flavor').text($('#flavor-input option:selected').text());
             $('#review-keypair').text($('#keypair-input option:selected').text());
-            let networks = $('#network-input option:selected').toArray().map((v) => v.innerHTML).join(',');
-            $('#review-networks').text(networks);
+            $('#review-networks').text($('#public-input')[0].checked);
             $('#review-subdomain').text($('#subdomain-input').val());
         }
         $(self.modal + " .list-group-item[data-tab='" + self.currentTab + "']").addClass("active");
@@ -523,14 +521,14 @@ var wizard = function(id) {
         let image = $('#image-input').val();
         let flavor = $('#flavor-input').val();
         let keypair = $('#keypair-input').val();
-        let networks = $('#network-input').val();
         let domain = $('#subdomain-input').val();
         let keyName = $('#keypair-input').val();
+        let pub = $('#public-input')[0].checked;
         if(keyName === 'None'){
             keyName = undefined;
         }
 
-        createServer(domain,flavor,image,name,networks,keyName).then(() => {
+        createServer(domain,flavor,image,name,pub,keyName).then(() => {
             $(self.modal + " .wizard-pf-cancel").addClass("hidden");
             $(self.modal + " .wizard-pf-finish").addClass("hidden");
             $(self.modal + " .wizard-pf-close").removeClass("hidden");
