@@ -42,6 +42,7 @@
                         <% end %>
                     </tbody>
                 </table>
+                <button id="delete-selected" class="btn btn-danger"><span>Delete Selected</span><div class="spinner spinner-inverse hidden"></button>
             </div>
         </div>
     </div>

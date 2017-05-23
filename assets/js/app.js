@@ -36,7 +36,14 @@ $(document).ready(function() {
         }
     });
     $('#lbSubmitButton').click(createLoadbalancer);
-    $('.delete-domain').click(withAttr('domainId', deleteDomain));
+    $('.delete-domain').click(withAttr('domainId', (id) => {
+        deleteDomain(id).then(() => {
+            window.location.reload();
+        }).catch((info) => {
+            console.log(info);
+            alert('Something went wrong! Please try again');
+        });
+    }));
     $('.approve-user').click(withAttr('userId', approveUser));
     $('.reject-user').click(withAttr('userId', rejectUser));
     $('.make-admin').click(withAttr('userId', makeUserAdmin));
@@ -71,6 +78,8 @@ $(document).ready(function() {
         $('#editDelete').data('domainId',id);
         $('#editSave').data('domainId',id);
     });
+    // deselect everything
+    $('td input[type="checkbox"]').prop('checked',false);
 
     var table = $('#domain-table').DataTable({
         select: {
@@ -86,6 +95,18 @@ $(document).ready(function() {
             {name: "actions",orderable: false},
         ],
         order: [[1,'asc']]
+    });
+    $('#delete-selected').click(() => {
+        toggleSpinner($('#delete-selected'));
+        let selected = table.rows({selected: true}).data();
+        let srv_ids = [];
+        for(var i = 0; i < selected.length; i++) {
+            srv_ids.push($(selected[i][5]).find('button').data().id);
+        }
+        let p = srv_ids.map((id) => {
+            deleteDomain(id);
+        });
+        Promise.all(p).then(() => window.location.reload());
     });
     $('#selectAll').click(() => {
         $('.row-select').click();
@@ -176,12 +197,14 @@ function approveUser(id) {
 }
 
 function deleteDomain(id) {
+    return new Promise((resolve,reject) => {
     $.ajax({
             url: `/api/domains/${id}`,
             type: 'DELETE'
         })
-        .done(() => window.location.reload())
-        .fail(() => alert('Failed!'));
+        .done(resolve)
+        .fail(reject);
+    });
 }
 
 function createLoadbalancer() {
