@@ -18,7 +18,23 @@ defmodule Bifroest.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Bifroest.Application, []},
-     extra_applications: [:logger, :ueberauth_google, :wobserver, :httpoison, :bamboo]]
+     extra_applications: [:logger, :ueberauth_google, :wobserver, :httpoison, :bamboo],
+     applications: [:logger,
+                    :ueberauth_google,
+                    :wobserver,
+                    :httpoison,
+                    :bamboo,
+                    :phoenix_html,
+                    :postgrex,
+                    :guardian,
+                    :bamboo_smtp,
+                    :cowboy,
+                    :phoenix_pubsub,
+                    :exredis,
+                    :gettext,
+                    :phoenix_ecto,
+                    :phoenix
+                   ]]
   end
 
   # Specifies which paths to compile per environment.
