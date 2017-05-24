@@ -38,8 +38,8 @@ defmodule Bifroest.Web.ViewHelpers do
   end
 
   def keypairs(conn) do
-    %Bifroest.Accounts.User{project_id: project_id} = current_user(conn)
-    {:ok, keypairs} = Bifroest.Openstack.Compute.get_keypairs(project_id)
+    %Bifroest.Accounts.User{project_id: project_id, user_id: user_id} = current_user(conn)
+    {:ok, keypairs} = Bifroest.Openstack.Compute.get_keypairs(project_id, user_id)
     keypairs
   end
 end

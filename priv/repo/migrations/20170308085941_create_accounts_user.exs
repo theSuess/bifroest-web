@@ -7,6 +7,7 @@ defmodule Bifroest.Repo.Migrations.CreateBifroest.Accounts.User do
       add :name, :string
       add :is_admin, :boolean, default: false
       add :project_id, :string
+      add :user_id, :string
 
       timestamps()
     end

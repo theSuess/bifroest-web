@@ -80,7 +80,7 @@ defmodule Bifroest.Accounts do
     {:ok, user_id} = Bifroest.Openstack.Identity.create_user(email,project_id)
     {:ok,project_id} = Bifroest.Openstack.Identity.assign_user(user_id,project_id)
     user
-    |> user_changeset(%{project_id: project_id})
+    |> user_changeset(%{project_id: project_id, user_id: user_id})
     |> Repo.update()
   end
 
@@ -139,7 +139,7 @@ defmodule Bifroest.Accounts do
 
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email,:name,:is_admin,:project_id])
+    |> cast(attrs, [:email,:name,:is_admin,:project_id, :user_id])
     |> validate_required([:email,:name])
     |> unique_constraint(:email)
   end

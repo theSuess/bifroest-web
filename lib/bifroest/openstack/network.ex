@@ -19,4 +19,7 @@ defmodule Bifroest.Openstack.Network do
       _ -> {:error, "Unable to get networks"}
     end
   end
+
+  def update_security_gropus(id) do
+  end
 end
