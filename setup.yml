@@ -1,0 +1,55 @@
+---
+- hosts: app-servers
+  vars:
+    db_name: bifroest_prod
+    db_username: bfr
+    db_password: bfr2017 
+  tasks:
+  - name: install requirements for ansible modules
+    dnf: name=python2-psycopg2 state=latest
+    become: yes
+    become_method: sudo
+  - name: install elixir, erlang & npm
+    dnf: name="{{ item }}" state=latest
+    become: yes
+    become_method: sudo
+    with_items:
+      - elixir
+      - erlang
+      - npm
+  - name: install brunch
+    npm: name=brunch global=yes
+  - name: install postgres
+    dnf: name=postgresql-server state=latest
+    become: yes
+    become_method: sudo
+  - name: install redis
+    dnf: name=redis state=latest
+    become: yes
+    become_method: sudo
+  - name: ensure postgres is running
+    service:
+      name: postgresql
+      state: started
+    become: yes
+    become_method: sudo
+  - name: ensure redis is running
+    service:
+      name: redis
+      state: started
+    become: yes
+    become_method: sudo
+  - name: create database
+    become: yes
+    become_method: sudo
+    become_user: postgres
+    postgresql_db:
+      name: "{{ db_name }}"
+  - name: create user
+    become: yes
+    become_method: sudo
+    become_user: postgres
+    postgresql_user:
+      db: "{{ db_name }}"
+      name: "{{ db_username }}"
+      password: "{{ db_password }}"

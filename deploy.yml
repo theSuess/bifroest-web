@@ -1,0 +1,69 @@
+---
+- hosts: app-servers
+  become: yes
+  become_method: sudo
+  vars:
+    db_name: bifroest_prod
+    db_username: bfr
+    db_password: bfr2017 
+  tasks:
+  - name: clone repository
+    git:
+      repo: "https://github.com/theSuess/bifroest-web"
+      dest: "/bifroest-web"
+      force: true
+  - name: get dependencies
+    command: "mix deps.get"
+    args:
+      chdir: "/bifroest-web"
+  - name: copy secrets
+    copy:
+      src: "secrets"
+      dest: "/bifroest-web/secrets"
+  - name: copy config
+    copy:
+      src: "config/prod.secret.exs"
+      dest: "/bifroest-web/config/prod.secret.exs"
+  - name: install rebar
+    command: "mix local.rebar --force"
+    args:
+      chdir: "/bifroest-web"
+  - name: install node modules
+    npm:
+      path: "/bifroest-web/assets/"
+  - name: build brunch assets
+    command: "brunch build --production"
+    args:
+      chdir: "/bifroest-web/assets/"
+  - name: digest
+    shell: "source /bifroest-web/secrets && MIX_ENV=prod mix phx.digest"
+    args:
+      chdir: "/bifroest-web"
+  - name: compile
+    shell: "source /bifroest-web/secrets && MIX_ENV=prod mix compile"
+    args:
+      chdir: "/bifroest-web"
+  - name: migrate
+    shell: "MIX_ENV=prod mix ecto.migrate"
+    args:
+      chdir: "/bifroest-web"
+  - name: release
+    shell: "source /bifroest-web/secrets && MIX_ENV=prod mix release"
+    args:
+      chdir: "/bifroest-web"
+  - name: check if node is running
+    shell: "PORT=8080 /bifroest-web/rel/bifroest/bin/bifroest ping"
+    register: result
+    ignore_errors: True
+  - name: run node
+    shell: "PORT=8080 /bifroest-web/rel/bifroest/bin/bifroest start"
+    when: result|failed
+  - name: get git rev
+    shell: "git rev-parse HEAD"
+    args:
+      chdir: "/bifroest-web"
+    register: rev
+  - name: upgrade
+    shell: "PORT=8080 /bifroest-web/rel/bifroest/bin/bifroest upgrade 0.1.0-{{ rev.stdout }}"
+  - name: testing the server
+    shell: "/bifroest-web/rel/bifroest/bin/bifroest ping"
