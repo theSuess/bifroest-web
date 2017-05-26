@@ -74,14 +74,15 @@ defmodule Bifroest.Accounts do
   """
 
   def approve_user(%User{email: email} = user) do
-    Logger.info "Creating project"
-    {:ok, project_id} = Bifroest.Openstack.Identity.create_project(email)
-    Logger.info "Creating openstack user"
-    {:ok, user_id} = Bifroest.Openstack.Identity.create_user(email,project_id)
-    {:ok,project_id} = Bifroest.Openstack.Identity.assign_user(user_id,project_id)
-    user
-    |> user_changeset(%{project_id: project_id, user_id: user_id})
-    |> Repo.update()
+    with {:ok, project_id} <- Bifroest.Openstack.Identity.create_project(email),
+         :ok <- Bifroest.Openstack.Network.add_default_rules(project_id),
+         {:ok, user_id} <- Bifroest.Openstack.Identity.create_user(email,project_id),
+         {:ok, project_id} <- Bifroest.Openstack.Identity.assign_user(user_id,project_id)
+      do
+      user
+        |> user_changeset(%{project_id: project_id, user_id: user_id})
+        |> Repo.update()
+      end
   end
 
   def reject_user(%User{} = user) do

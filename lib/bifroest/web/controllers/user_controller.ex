@@ -25,9 +25,8 @@ defmodule Bifroest.Web.UserController do
     current_user = Guardian.Plug.current_resource(conn)
     user = Accounts.get_user!(id)
     if current_user.is_admin do
-      with {:ok, %User{} = user} <- Accounts.approve_user(user) do
-        render(conn, "show.json", user: user)
-      end
+      Task.async(fn -> Accounts.approve_user(user) end)
+      send_resp(conn,:accepted,"")
     else
       send_resp(conn, :forbidden,"")
     end
