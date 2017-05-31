@@ -2,13 +2,13 @@ defmodule Bifroest.Mixfile do
   use Mix.Project
 
   def project do
-    {result, _exit_code} = System.cmd("git", ["rev-parse", "HEAD"])
+    {result, _exit_code} = System.cmd("git", ["describe", "--tags", "--long"])
 
     # We'll truncate the commit SHA to 7 chars. Feel free to change
     git_sha = String.trim(result)
 
     [app: :bifroest,
-     version: "0.1.0-#{git_sha}",
+     version: git_sha,
      elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
