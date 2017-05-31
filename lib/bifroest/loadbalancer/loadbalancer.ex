@@ -10,6 +10,7 @@ defmodule Bifroest.Loadbalancer do
   alias Bifroest.Loadbalancer.Domain
   alias Bifroest.Accounts.User
   require Ecto.Query
+  require Logger
 
 
   def start_link do
@@ -106,7 +107,7 @@ defmodule Bifroest.Loadbalancer do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_domain(%Domain{} = domain, %{server_addr: h, domain: d} = attrs) do
+  def update_domain(%Domain{} = domain, %{"domain" => d, "server_addr" => h} = attrs) do
     set_host(d,h)
     domain
     |> domain_changeset(attrs)

@@ -44,7 +44,6 @@ defmodule Bifroest.Openstack.Compute do
     case HTTPoison.get(@url <> "/#{project_id}/os-keypairs?user_id=#{user_id}",headers(project_id) ++ [{"OpenStack-API-Version","compute 2.35"}]) do
       {:ok, %HTTPoison.Response{body: body}} ->
         {:ok, %{"keypairs" => keypairs}} = body |> Poison.decode(as: %{"keypairs" => [%{"keypair" => %Keypair{}}]})
-        IO.inspect keypairs
         kps = keypairs
           |> Enum.map(fn %{"keypair" => val} -> val end)
         {:ok, kps}

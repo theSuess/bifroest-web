@@ -26,7 +26,6 @@ defmodule Bifroest.Web.UserController do
     user = Accounts.get_user!(id)
     if current_user.is_admin do
       with resp <- Accounts.approve_user(user) do
-        IO.inspect(resp)
         send_resp(conn,:ok,"")
       end
     else
