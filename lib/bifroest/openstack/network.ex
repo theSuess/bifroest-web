@@ -8,6 +8,7 @@ defmodule Bifroest.Openstack.Network do
   end
 
   import Bifroest.Openstack.Base
+  require Logger
 
   @url Application.get_env(:bifroest,:openstack_network_url)
 
@@ -47,6 +48,8 @@ defmodule Bifroest.Openstack.Network do
         if grp != nil do
           {:ok, grp}
         else
+          Logger.info "Could not retrieve security group - retrying..."
+          Process.sleep(1000)
           get_default_security_group(project_id)
         end
       {:ok, %HTTPoison.Response{body: body}} ->

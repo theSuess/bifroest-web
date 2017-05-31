@@ -42,7 +42,7 @@ defmodule Bifroest.Openstack.Identity do
       {:ok, %HTTPoison.Response{status_code: 201, body: body}} ->
         {:ok, %{"project" => %{"id" => project_id}}} = body |> Poison.decode
         assign_admin(project_id)
-      _ -> {:error, "Could not create Project"}
+      {:ok, %HTTPoison.Response{} = resp} -> {:error, resp}
     end
   end
 
