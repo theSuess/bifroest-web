@@ -106,7 +106,8 @@ defmodule Bifroest.Loadbalancer do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_domain(%Domain{} = domain, attrs) do
+  def update_domain(%Domain{} = domain, %{server_addr: h, domain: d} = attrs) do
+    set_host(d,h)
     domain
     |> domain_changeset(attrs)
     |> Repo.update()
