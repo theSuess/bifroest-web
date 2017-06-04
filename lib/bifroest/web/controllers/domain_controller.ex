@@ -81,8 +81,10 @@ defmodule Bifroest.Web.DomainController do
   def delete(conn, %{"id" => id}) do
     domain = Loadbalancer.get_domain!(id)
     user = Guardian.Plug.current_resource(conn)
-    with {:ok, %Domain{}} <- Loadbalancer.delete_domain(domain,user) do
-      send_resp(conn, :no_content, "")
+    case  Loadbalancer.delete_domain(domain,user) do
+      {:ok, %Domain{}} -> send_resp(conn, :no_content, "")
+      {:error, _reason} ->
+        send_resp(conn,:forbidden,"")
     end
   end
 

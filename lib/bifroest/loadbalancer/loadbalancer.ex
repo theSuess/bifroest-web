@@ -122,7 +122,7 @@ defmodule Bifroest.Loadbalancer do
       iex> delete_domain(domain,user)
       {:ok, %Domain{}}
   """
-  def delete_domain(%Domain{user: %User{is_admin: admin, project_id: project_id}} = domain, user) do
+  def delete_domain(%Domain{user: %User{project_id: project_id}} = domain, %User{is_admin: admin} = user) do
     if domain.user_id == user.id || admin do
       del_domain(domain.domain)
       if domain.server_id != nil do
