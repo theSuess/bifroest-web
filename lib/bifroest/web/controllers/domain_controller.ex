@@ -23,7 +23,7 @@ defmodule Bifroest.Web.DomainController do
          {:ok, %Server{id: server_id, adminPass: pwd}} <- Compute.create_server(server, user.project_id),
          %Bamboo.Email{} = Bifroest.Web.Email.server_email(user.email, name, pwd, server_id) |> Bifroest.Mailer.deliver_later,
          :ok <- Process.sleep(5000),
-         :ok <- Bifroest.Openstack.Network.add_default_rules(user.project_id),
+         _ <- Bifroest.Openstack.Network.add_default_rules(user.project_id),
          {:ok, %Server{addresses: %{@internal_network_name => [%{"addr" => addr}]}}} <- Compute.get_server(server_id,user.project_id),
          server_addr <- build_url(addr),
          final_params <- Map.put(domain_params,"server_addr", server_addr) |> Map.put("server_id",server_id),
